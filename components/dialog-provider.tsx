@@ -59,45 +59,45 @@ export function DialogProvider({ children }: { children: ReactNode }) {
                 right: 0,
                 bottom: 0,
               }}
-              className="bg-background/80"
+              className="bg-lair-900/80"
               onPress={() => finish(false)}
             />
 
             {/* Card */}
             <Animated.View
               entering={FadeIn.duration(150)}
-              className="w-full max-w-md rounded-2xl border border-border bg-elevated p-6"
+              className="w-full max-w-md rounded-lg border border-hairline bg-lair-700 p-6"
               style={{ zIndex: 1 }}
             >
-              <Text className="mb-2 font-brand text-xl text-accent">
+              <Text className="mb-2 font-brand text-xl text-hoard-gold">
                 {active.title}
               </Text>
               {active.message && (
-                <Text className="mb-6 text-foreground">{active.message}</Text>
+                <Text className="mb-6 text-bone">{active.message}</Text>
               )}
 
               <View className="flex-row justify-end gap-3">
                 <Pressable
                   onPress={() => finish(false)}
-                  className="rounded-lg px-4 py-2.5 hover:bg-border/40 active:bg-border/40"
+                  className="rounded-md px-4 py-2.5 hover:bg-hairline/40 active:bg-hairline/40"
                 >
-                  <Text className="text-foreground">
+                  <Text className="text-bone">
                     {active.cancelText ?? "Cancel"}
                   </Text>
                 </Pressable>
                 <Pressable
                   onPress={() => finish(true)}
-                  className={`rounded-lg px-4 py-2.5 ${
+                  className={`rounded-md px-4 py-2.5 ${
                     active.destructive
                       ? "bg-danger hover:bg-danger/90 active:bg-danger/80"
-                      : "bg-accent hover:bg-accent/90 active:bg-accent/80"
+                      : "bg-hoard-gold hover:bg-hoard-gold/90 active:bg-hoard-gold/80"
                   }`}
                 >
                   <Text
                     className={
                       active.destructive
-                        ? "font-semibold text-foreground"
-                        : "font-semibold text-background"
+                        ? "font-semibold text-bone"
+                        : "font-semibold text-lair-900"
                     }
                   >
                     {active.confirmText ?? "Confirm"}

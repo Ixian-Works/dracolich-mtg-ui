@@ -19,6 +19,7 @@ import { FormField } from "@/components/form-field";
 import { BrandMark } from "@/components/ui/brand-mark";
 import { ApiError } from "@/lib/api";
 import { useAuth } from "@/lib/auth";
+import { alpha, palette } from "@/lib/tokens";
 
 const schema = z.object({
   username: z.string().min(1, "Username is required"),
@@ -70,24 +71,24 @@ export default function LoginScreen() {
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : undefined}
       style={{ flex: 1 }}
-      className="bg-background"
+      className="bg-lair-900"
     >
       <ScrollView
         contentContainerStyle={{ flexGrow: 1, justifyContent: "center", padding: 24 }}
         keyboardShouldPersistTaps="handled"
       >
         <View
-          className="w-full max-w-md self-center rounded-2xl border border-border p-8"
+          className="w-full max-w-md self-center rounded-lg border border-hairline p-8"
         style={{
-          backgroundColor: "rgba(20, 17, 30, 0.78)",
+          backgroundColor: alpha(palette.lair800, 0.78),
           ...(Platform.OS === "web"
             ? ({
                 backdropFilter: "blur(16px)",
                 WebkitBackdropFilter: "blur(16px)",
-                boxShadow: "0 0 32px rgba(155, 107, 242, 0.25)",
+                boxShadow: `0 0 32px ${alpha(palette.soulfire, 0.25)}`,
               } as object)
             : {
-                shadowColor: "#9B6BF2",
+                shadowColor: palette.soulfire,
                 shadowOffset: { width: 0, height: 0 },
                 shadowOpacity: 0.3,
                 shadowRadius: 18,
@@ -98,18 +99,18 @@ export default function LoginScreen() {
           <BrandMark size={48} />
         </View>
         <Text
-          className="mb-2 text-center font-brand text-foreground"
+          className="mb-2 text-center font-brand text-bone"
           style={{
             fontSize: 28,
             fontWeight: "700",
             ...(Platform.OS === "web"
-              ? ({ textShadow: "0 0 20px rgba(155, 107, 242, 0.4)" } as object)
+              ? ({ textShadow: `0 0 20px ${alpha(palette.soulfire, 0.4)}` } as object)
               : {}),
           }}
         >
           Sign in
         </Text>
-        <Text className="mb-8 text-center text-muted">
+        <Text className="mb-8 text-center text-bone-dim">
           Welcome back to Dracolich
         </Text>
 
@@ -141,7 +142,7 @@ export default function LoginScreen() {
         />
 
         {serverError && (
-          <View className="mb-4 rounded-lg bg-danger/20 p-3">
+          <View className="mb-4 rounded-md bg-danger/20 p-3">
             <Text className="text-sm text-danger">{serverError}</Text>
           </View>
         )}
@@ -149,16 +150,16 @@ export default function LoginScreen() {
         <Pressable
           onPress={handleSubmit(onSubmit)}
           disabled={isSubmitting}
-          className={`mt-2 items-center rounded-lg py-3 ${
-            isSubmitting ? "bg-primary/60" : "bg-primary"
+          className={`mt-2 items-center rounded-md py-3 ${
+            isSubmitting ? "bg-soulfire/60" : "bg-soulfire"
           }`}
           style={
             isSubmitting
               ? undefined
               : Platform.OS === "web"
-                ? ({ boxShadow: "0 0 18px rgba(155, 107, 242, 0.5)" } as object)
+                ? ({ boxShadow: `0 0 18px ${alpha(palette.soulfire, 0.5)}` } as object)
                 : {
-                    shadowColor: "#9B6BF2",
+                    shadowColor: palette.soulfire,
                     shadowOffset: { width: 0, height: 0 },
                     shadowOpacity: 0.5,
                     shadowRadius: 12,
@@ -166,17 +167,17 @@ export default function LoginScreen() {
           }
         >
           {isSubmitting ? (
-            <ActivityIndicator color="#FFFFFF" />
+            <ActivityIndicator color={palette.white} />
           ) : (
             <Text className="font-semibold text-white">Sign in</Text>
           )}
         </Pressable>
 
         <View className="mt-6 flex-row justify-center">
-          <Text className="text-muted">Don&apos;t have an account? </Text>
+          <Text className="text-bone-dim">Don&apos;t have an account? </Text>
           <Link href="/signup" replace asChild>
             <Pressable>
-              <Text className="text-accent">Sign up</Text>
+              <Text className="text-hoard-gold">Sign up</Text>
             </Pressable>
           </Link>
         </View>
@@ -185,7 +186,7 @@ export default function LoginScreen() {
           onPress={() => router.back()}
           className="mt-8 items-center"
         >
-          <Text className="text-sm text-muted">Cancel</Text>
+          <Text className="text-sm text-bone-dim">Cancel</Text>
         </Pressable>
         </View>
       </ScrollView>

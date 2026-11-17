@@ -15,6 +15,7 @@ import { Text, View } from "react-native";
 
 import { ManaCost } from "@/components/mana-cost";
 import type { DeckStatsDto } from "@/lib/queries/decks";
+import { alpha, legacy, palette, radii } from "@/lib/tokens";
 
 interface DeckStatsPanelProps {
   stats: DeckStatsDto;
@@ -25,12 +26,12 @@ interface DeckStatsPanelProps {
 }
 
 const COLOR_HEX: Record<string, string> = {
-  W: "#F8F6E8",
-  U: "#5C9EE5",
-  B: "#5A4F58",
-  R: "#D14B3D",
-  G: "#5BA66B",
-  C: "#9A9AA8",
+  W: palette.manaWhite,
+  U: palette.manaBlue,
+  B: legacy.chartBlack,
+  R: palette.manaRed,
+  G: palette.manaGreen,
+  C: palette.boneDim,
 };
 
 const COLOR_LABELS: Record<string, string> = {
@@ -68,14 +69,14 @@ export function DeckStatsPanel({ stats }: DeckStatsPanelProps) {
 
       {stats.warnings && stats.warnings.length > 0 && (
         <View
-          className="mt-5 rounded-xl border border-danger/40"
-          style={{ backgroundColor: "rgba(209,75,61,0.08)", padding: 12 }}
+          className="mt-5 rounded-lg border border-danger/40"
+          style={{ backgroundColor: alpha(palette.danger, 0.08), padding: 12 }}
         >
           <Text className="mb-1 text-xs uppercase tracking-wider text-danger">
             Warnings
           </Text>
           {stats.warnings.map((w, i) => (
-            <Text key={i} className="mt-1 text-sm text-foreground">
+            <Text key={i} className="mt-1 text-sm text-bone">
               • {w}
             </Text>
           ))}
@@ -103,11 +104,11 @@ function SummaryTiles({ stats }: { stats: DeckStatsDto }) {
 function Tile({ label, value }: { label: string; value: string }) {
   return (
     <View
-      className="flex-1 items-center rounded-xl border border-border"
-      style={{ backgroundColor: "#1C1C24", paddingVertical: 12 }}
+      className="flex-1 items-center rounded-lg border border-hairline"
+      style={{ backgroundColor: palette.lair700, paddingVertical: 12 }}
     >
-      <Text className="font-brand text-2xl text-foreground">{value}</Text>
-      <Text className="mt-0.5 text-[10px] uppercase tracking-widest text-muted">
+      <Text className="font-brand text-2xl text-bone">{value}</Text>
+      <Text className="mt-0.5 text-[10px] uppercase tracking-widest text-bone-dim">
         {label}
       </Text>
     </View>
@@ -152,22 +153,22 @@ function ManaCurve({ curve }: { curve: Record<string, number> }) {
             key={cmc}
             style={{ flex: 1, alignItems: "center", justifyContent: "flex-end" }}
           >
-            <Text className="mb-1 text-[10px] text-muted">{count}</Text>
+            <Text className="mb-1 text-[10px] text-bone-dim">{count}</Text>
             <View
               style={{
                 width: "70%",
                 height: h,
-                borderRadius: 3,
-                backgroundColor: "#D4B25E",
+                borderRadius: radii.sm,
+                backgroundColor: palette.hoardGold,
                 // Subtle inner highlight at the top of each bar so the
                 // colored block isn't flat.
-                shadowColor: "#D4B25E",
+                shadowColor: palette.hoardGold,
                 shadowOpacity: 0.4,
                 shadowRadius: 6,
                 shadowOffset: { width: 0, height: 0 },
               }}
             />
-            <Text className="mt-1.5 text-xs text-foreground">{cmc}</Text>
+            <Text className="mt-1.5 text-xs text-bone">{cmc}</Text>
           </View>
         );
       })}
@@ -192,7 +193,7 @@ function ColorStripe({ pie }: { pie: Record<string, number> }) {
     <View>
       {/* Stripe */}
       <View
-        className="flex-row overflow-hidden rounded-lg"
+        className="flex-row overflow-hidden rounded-md"
         style={{ height: 22 }}
       >
         {entries.map(([code, v]) => (
@@ -200,7 +201,7 @@ function ColorStripe({ pie }: { pie: Record<string, number> }) {
             key={code}
             style={{
               flex: v / total,
-              backgroundColor: COLOR_HEX[code] ?? "#9A9AA8",
+              backgroundColor: COLOR_HEX[code] ?? palette.boneDim,
             }}
           />
         ))}
@@ -216,14 +217,14 @@ function ColorStripe({ pie }: { pie: Record<string, number> }) {
               style={{
                 width: 8,
                 height: 8,
-                borderRadius: 4,
-                backgroundColor: COLOR_HEX[code] ?? "#9A9AA8",
+                borderRadius: radii.full,
+                backgroundColor: COLOR_HEX[code] ?? palette.boneDim,
               }}
             />
-            <Text className="text-xs text-foreground">
+            <Text className="text-xs text-bone">
               {COLOR_LABELS[code] ?? code}
             </Text>
-            <Text className="text-xs text-muted">
+            <Text className="text-xs text-bone-dim">
               {Math.round((v / total) * 100)}%
             </Text>
           </View>
@@ -248,24 +249,24 @@ function TypeBars({ breakdown }: { breakdown: Record<string, number> }) {
       {entries.map(([type, count]) => (
         <View key={type} className="flex-row items-center" style={{ gap: 8 }}>
           <Text
-            className="w-24 text-xs text-foreground"
+            className="w-24 text-xs text-bone"
             numberOfLines={1}
           >
             {type}
           </Text>
           <View
             className="flex-1 overflow-hidden rounded-sm"
-            style={{ height: 10, backgroundColor: "#2A2A33" }}
+            style={{ height: 10, backgroundColor: palette.hairline }}
           >
             <View
               style={{
                 width: `${max > 0 ? (count / max) * 100 : 0}%`,
                 height: "100%",
-                backgroundColor: "#D4B25E",
+                backgroundColor: palette.hoardGold,
               }}
             />
           </View>
-          <Text className="w-6 text-right text-xs text-muted">{count}</Text>
+          <Text className="w-6 text-right text-xs text-bone-dim">{count}</Text>
         </View>
       ))}
     </View>
@@ -283,7 +284,7 @@ function Section({
 }) {
   return (
     <View className="mt-6">
-      <Text className="mb-3 text-[11px] uppercase tracking-widest text-muted">
+      <Text className="mb-3 text-[11px] uppercase tracking-widest text-bone-dim">
         {title}
       </Text>
       {children}

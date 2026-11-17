@@ -32,6 +32,7 @@ import {
   type DeckDto,
   type UpdateDeckRequest,
 } from "@/lib/queries/decks";
+import { palette, radii } from "@/lib/tokens";
 
 const PAGE_PADDING = 24;
 
@@ -150,15 +151,15 @@ export default function DeckFinalizeScreen() {
           >
             <Pressable
               onPress={() => router.back()}
-              className="rounded-md px-2 py-1 hover:bg-elevated active:bg-elevated"
+              className="rounded-md px-2 py-1 hover:bg-lair-700 active:bg-lair-700"
             >
-              <Text className="text-sm text-accent">← Back to review</Text>
+              <Text className="text-sm text-hoard-gold">← Back to review</Text>
             </Pressable>
             <View style={{ flex: 1 }}>
-              <Text className="text-xs uppercase tracking-wider text-muted">
+              <Text className="text-xs uppercase tracking-wider text-bone-dim">
                 Finalize
               </Text>
-              <Text className="font-brand text-xl text-foreground">
+              <Text className="font-brand text-xl text-bone">
                 Confirm and create
               </Text>
             </View>
@@ -166,16 +167,16 @@ export default function DeckFinalizeScreen() {
 
           {deckQuery.isLoading && !deck && (
             <View className="items-center py-12">
-              <ActivityIndicator size="large" color="#D4B25E" />
+              <ActivityIndicator size="large" color={palette.hoardGold} />
             </View>
           )}
 
           {deckQuery.error && !deck && (
-            <View className="rounded-lg bg-danger/20 p-4">
+            <View className="rounded-md bg-danger/20 p-4">
               <Text className="font-semibold text-danger">
                 Couldn&apos;t load deck
               </Text>
-              <Text className="mt-1 text-foreground">
+              <Text className="mt-1 text-bone">
                 {(deckQuery.error as Error).message}
               </Text>
             </View>
@@ -190,11 +191,11 @@ export default function DeckFinalizeScreen() {
                   value={name}
                   onChangeText={setName}
                   placeholder="Untitled deck"
-                  placeholderTextColor="#9A9AA8"
-                  className="rounded-lg border border-border bg-elevated px-4 py-3 text-foreground"
+                  placeholderTextColor={palette.boneDim}
+                  className="rounded-md border border-hairline bg-lair-700 px-4 py-3 text-bone"
                   style={{
                     fontSize: 15,
-                    color: "#E8E6E3",
+                    color: palette.bone,
                     ...(Platform.OS === "web"
                       ? ({ outlineStyle: "none" } as object)
                       : {}),
@@ -210,13 +211,13 @@ export default function DeckFinalizeScreen() {
                   value={description}
                   onChangeText={setDescription}
                   placeholder="Optional"
-                  placeholderTextColor="#9A9AA8"
+                  placeholderTextColor={palette.boneDim}
                   multiline
                   numberOfLines={4}
-                  className="rounded-lg border border-border bg-elevated px-4 py-3 text-foreground"
+                  className="rounded-md border border-hairline bg-lair-700 px-4 py-3 text-bone"
                   style={{
                     fontSize: 15,
-                    color: "#E8E6E3",
+                    color: palette.bone,
                     minHeight: 96,
                     textAlignVertical: "top",
                     ...(Platform.OS === "web"
@@ -251,7 +252,7 @@ export default function DeckFinalizeScreen() {
               </FieldGroup>
 
               {updateDeck.error && (
-                <View className="mb-4 rounded-lg bg-danger/20 p-3">
+                <View className="mb-4 rounded-md bg-danger/20 p-3">
                   <Text className="text-sm text-danger">
                     {(updateDeck.error as Error).message}
                   </Text>
@@ -265,13 +266,13 @@ export default function DeckFinalizeScreen() {
                 <Pressable
                   onPress={() => handleSubmit(true)}
                   disabled={!canSave}
-                  className="flex-1 rounded-lg border border-border bg-elevated px-4 py-3 hover:bg-border/40 active:bg-border/40"
+                  className="flex-1 rounded-md border border-hairline bg-lair-700 px-4 py-3 hover:bg-hairline/40 active:bg-hairline/40"
                   style={{
                     minWidth: 160,
                     opacity: canSave ? 1 : 0.5,
                   }}
                 >
-                  <Text className="text-center text-sm font-semibold text-foreground">
+                  <Text className="text-center text-sm font-semibold text-bone">
                     Save as draft
                   </Text>
                 </Pressable>
@@ -279,7 +280,7 @@ export default function DeckFinalizeScreen() {
                 <Pressable
                   onPress={() => handleSubmit(false)}
                   disabled={!canSave}
-                  className="flex-1 flex-row items-center justify-center rounded-lg bg-accent px-4 py-3 hover:bg-accent/90 active:bg-accent/80"
+                  className="flex-1 flex-row items-center justify-center rounded-md bg-hoard-gold px-4 py-3 hover:bg-hoard-gold/90 active:bg-hoard-gold/80"
                   style={{
                     minWidth: 200,
                     gap: 8,
@@ -287,17 +288,17 @@ export default function DeckFinalizeScreen() {
                   }}
                 >
                   {updateDeck.isPending ? (
-                    <ActivityIndicator size="small" color="#0F0F12" />
+                    <ActivityIndicator size="small" color={palette.lair900} />
                   ) : (
-                    <Ionicons name="checkmark" size={18} color="#0F0F12" />
+                    <Ionicons name="checkmark" size={18} color={palette.lair900} />
                   )}
-                  <Text className="font-semibold text-background">
+                  <Text className="font-semibold text-lair-900">
                     Create deck
                   </Text>
                 </Pressable>
               </View>
 
-              <Text className="mt-4 text-xs text-muted">
+              <Text className="mt-4 text-xs text-bone-dim">
                 You can edit any of this later from the deck&apos;s detail
                 page.
               </Text>
@@ -318,10 +319,10 @@ function SummaryCard({
 }) {
   return (
     <View
-      className="mb-6 rounded-xl border border-border"
-      style={{ backgroundColor: "#15151A", padding: 16, gap: 12 }}
+      className="mb-6 rounded-lg border border-hairline"
+      style={{ backgroundColor: palette.lair800, padding: 16, gap: 12 }}
     >
-      <Text className="text-xs uppercase tracking-wider text-muted">
+      <Text className="text-xs uppercase tracking-wider text-bone-dim">
         Summary
       </Text>
       <View
@@ -350,10 +351,10 @@ function SummaryCard({
 function SummaryItem({ label, value }: { label: string; value: string }) {
   return (
     <View>
-      <Text className="text-[10px] uppercase tracking-wider text-muted">
+      <Text className="text-[10px] uppercase tracking-wider text-bone-dim">
         {label}
       </Text>
-      <Text className="mt-0.5 font-brand text-base text-foreground">
+      <Text className="mt-0.5 font-brand text-base text-bone">
         {value}
       </Text>
     </View>
@@ -371,11 +372,11 @@ function FieldGroup({
 }) {
   return (
     <View className="mb-5">
-      <Text className="mb-2 text-xs uppercase tracking-wider text-muted">
+      <Text className="mb-2 text-xs uppercase tracking-wider text-bone-dim">
         {label}
       </Text>
       {children}
-      {hint && <Text className="mt-1.5 text-xs text-muted">{hint}</Text>}
+      {hint && <Text className="mt-1.5 text-xs text-bone-dim">{hint}</Text>}
     </View>
   );
 }
@@ -395,10 +396,10 @@ function VisibilityOption({
     <Pressable
       onPress={onPress}
       disabled={disabled}
-      className={`flex-row items-start rounded-lg border p-3 ${
+      className={`flex-row items-start rounded-md border p-3 ${
         selected
-          ? "border-accent bg-accent/10"
-          : "border-border bg-elevated hover:bg-border/30 active:bg-border/30"
+          ? "border-hoard-gold bg-hoard-gold/10"
+          : "border-hairline bg-lair-700 hover:bg-hairline/30 active:bg-hairline/30"
       }`}
       style={{
         gap: 12,
@@ -409,9 +410,9 @@ function VisibilityOption({
         style={{
           width: 18,
           height: 18,
-          borderRadius: 9,
+          borderRadius: radii.full,
           borderWidth: 2,
-          borderColor: selected ? "#D4B25E" : "#9A9AA8",
+          borderColor: selected ? palette.hoardGold : palette.boneDim,
           alignItems: "center",
           justifyContent: "center",
           marginTop: 2,
@@ -422,8 +423,8 @@ function VisibilityOption({
             style={{
               width: 8,
               height: 8,
-              borderRadius: 4,
-              backgroundColor: "#D4B25E",
+              borderRadius: radii.full,
+              backgroundColor: palette.hoardGold,
             }}
           />
         )}
@@ -433,17 +434,17 @@ function VisibilityOption({
           <Ionicons
             name={option.icon}
             size={15}
-            color={selected ? "#D4B25E" : "#9A9AA8"}
+            color={selected ? palette.hoardGold : palette.boneDim}
           />
           <Text
             className={`text-sm font-semibold ${
-              selected ? "text-accent" : "text-foreground"
+              selected ? "text-hoard-gold" : "text-bone"
             }`}
           >
             {option.label}
           </Text>
         </View>
-        <Text className="mt-1 text-xs text-muted">{option.hint}</Text>
+        <Text className="mt-1 text-xs text-bone-dim">{option.hint}</Text>
       </View>
     </Pressable>
   );

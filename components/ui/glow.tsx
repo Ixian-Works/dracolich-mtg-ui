@@ -17,23 +17,24 @@
 // `intensity` controls the shadow radius; `size` controls offset (we use
 // 0 by default so it reads as a halo rather than a drop shadow). Tokens:
 //
-//   color:     "purple" | "gold" | "blue"  (matches tailwind glow.* tokens)
+//   color:     "purple" | "gold" | "blue"  (soulfire, hoard-gold and mana-blue)
 //   intensity: "sm" | "md" | "lg"
 //
 // Usage:
 //   <Glow color="purple" intensity="md">
-//     <View className="rounded-xl bg-elevated p-6">...</View>
+//     <View className="rounded-lg bg-lair-700 p-6">...</View>
 //   </Glow>
 //
 // The wrapper does NOT clip its children — children must round their own
 // corners. This is intentional: clipping the glow would defeat the halo.
 
 import { Platform, View, type ViewProps } from "react-native";
+import { palette } from "@/lib/tokens";
 
 const GLOW_HEX: Record<GlowColor, string> = {
-  purple: "#9B6BF2",
-  gold: "#D4B25E",
-  blue: "#5C9EE5",
+  purple: palette.soulfire,
+  gold: palette.hoardGold,
+  blue: palette.manaBlue,
 };
 
 const INTENSITY: Record<GlowIntensity, { radius: number; opacity: number; elevation: number }> = {

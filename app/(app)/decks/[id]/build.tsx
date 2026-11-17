@@ -66,6 +66,7 @@ import {
   type DeckCardDto,
   type DeckDto,
 } from "@/lib/queries/decks";
+import { alpha, palette, radii } from "@/lib/tokens";
 
 const WIDE_BREAKPOINT = 768;
 const PAGE_PADDING = 24;
@@ -510,17 +511,17 @@ export default function DeckBuildScreen() {
           <View className="mb-5 flex-row items-center" style={{ gap: 12 }}>
             <Pressable
               onPress={() => router.back()}
-              className="rounded-md px-2 py-1 hover:bg-elevated active:bg-elevated"
+              className="rounded-md px-2 py-1 hover:bg-lair-700 active:bg-lair-700"
             >
-              <Text className="text-sm text-accent">← Back</Text>
+              <Text className="text-sm text-hoard-gold">← Back</Text>
             </Pressable>
 
             <View style={{ flex: 1 }}>
-              <Text className="text-xs uppercase tracking-wider text-muted">
+              <Text className="text-xs uppercase tracking-wider text-bone-dim">
                 Building
               </Text>
               <Text
-                className="font-brand text-xl text-foreground"
+                className="font-brand text-xl text-bone"
                 numberOfLines={1}
               >
                 {deck?.name ?? "..."}
@@ -536,35 +537,35 @@ export default function DeckBuildScreen() {
                 style={{ opacity: deleteDeck.isPending ? 0.5 : 1 }}
               >
                 {deleteDeck.isPending ? (
-                  <ActivityIndicator size="small" color="#D14B3D" />
+                  <ActivityIndicator size="small" color={palette.danger} />
                 ) : (
-                  <Ionicons name="trash-outline" size={16} color="#D14B3D" />
+                  <Ionicons name="trash-outline" size={16} color={palette.danger} />
                 )}
               </Pressable>
             )}
 
             <Pressable
               onPress={() => router.push(`/decks/${id}/review` as any)}
-              className="rounded-md bg-accent px-4 py-2 hover:bg-accent/90 active:bg-accent/80"
+              className="rounded-md bg-hoard-gold px-4 py-2 hover:bg-hoard-gold/90 active:bg-hoard-gold/80"
             >
-              <Text className="font-semibold text-background">Review</Text>
+              <Text className="font-semibold text-lair-900">Review</Text>
             </Pressable>
           </View>
 
           {/* ---- Loading state ---- */}
           {deckQuery.isLoading && !deck && (
             <View className="items-center py-12">
-              <ActivityIndicator size="large" color="#D4B25E" />
+              <ActivityIndicator size="large" color={palette.hoardGold} />
             </View>
           )}
 
           {/* ---- Error state ---- */}
           {deckQuery.error && !deck && (
-            <View className="rounded-lg bg-danger/20 p-4">
+            <View className="rounded-md bg-danger/20 p-4">
               <Text className="font-semibold text-danger">
                 Couldn&apos;t load deck
               </Text>
-              <Text className="mt-1 text-foreground">
+              <Text className="mt-1 text-bone">
                 {(deckQuery.error as Error).message}
               </Text>
             </View>
@@ -637,7 +638,7 @@ export default function DeckBuildScreen() {
           )}
 
           {addCard.error && (
-            <View className="mt-4 rounded-lg bg-danger/20 p-3">
+            <View className="mt-4 rounded-md bg-danger/20 p-3">
               <Text className="text-sm text-danger">
                 Couldn&apos;t add card: {(addCard.error as Error).message}
               </Text>
@@ -645,7 +646,7 @@ export default function DeckBuildScreen() {
           )}
 
           {removeCard.error && (
-            <View className="mt-4 rounded-lg bg-danger/20 p-3">
+            <View className="mt-4 rounded-md bg-danger/20 p-3">
               <Text className="text-sm text-danger">
                 Couldn&apos;t remove card: {(removeCard.error as Error).message}
               </Text>
@@ -796,10 +797,10 @@ function SearchPanel({
   return (
     <View>
       <View className="mb-3 flex-row items-baseline justify-between">
-        <Text className="text-xs uppercase tracking-wider text-muted">
+        <Text className="text-xs uppercase tracking-wider text-bone-dim">
           Find cards
         </Text>
-        <Text className="text-[11px] text-muted">Tap a card to add</Text>
+        <Text className="text-[11px] text-bone-dim">Tap a card to add</Text>
       </View>
 
       <SearchInput
@@ -847,7 +848,7 @@ function SearchPanel({
           sanity check on filter narrowness. */}
       {data && (
         <View className="mt-3 flex-row items-center">
-          <Text className="text-[11px] text-muted">
+          <Text className="text-[11px] text-bone-dim">
             {totalCount.toLocaleString()} card{totalCount === 1 ? "" : "s"}
             {hasInput ? " match" : ""}
           </Text>
@@ -856,19 +857,19 @@ function SearchPanel({
 
       {isLoading && (
         <View className="items-center py-6">
-          <ActivityIndicator size="small" color="#D4B25E" />
+          <ActivityIndicator size="small" color={palette.hoardGold} />
         </View>
       )}
 
       {error && (
-        <View className="mt-3 rounded-lg bg-danger/20 p-3">
+        <View className="mt-3 rounded-md bg-danger/20 p-3">
           <Text className="text-sm text-danger">{(error as Error).message}</Text>
         </View>
       )}
 
       {!isLoading && !error && cards.length === 0 && hasInput && (
-        <View className="mt-4 rounded-lg border border-border bg-elevated p-3">
-          <Text className="text-sm text-muted">No cards matched.</Text>
+        <View className="mt-4 rounded-md border border-hairline bg-lair-700 p-3">
+          <Text className="text-sm text-bone-dim">No cards matched.</Text>
         </View>
       )}
 
@@ -911,7 +912,7 @@ function SearchPanel({
                   justifyContent: "center",
                 }}
               >
-                <ActivityIndicator size="small" color="#D4B25E" />
+                <ActivityIndicator size="small" color={palette.hoardGold} />
               </View>
             ) : null
           }
@@ -934,26 +935,26 @@ function SearchInput({
 }) {
   return (
     <View
-      className="flex-row items-center rounded-full border border-border bg-elevated"
+      className="flex-row items-center rounded-full border border-hairline bg-lair-700"
       style={{ paddingHorizontal: 14, height: 44 }}
     >
       <Ionicons
         name="search"
         size={18}
-        color={value ? "#D4B25E" : "#9A9AA8"}
+        color={value ? palette.hoardGold : palette.boneDim}
       />
       <TextInput
         value={value}
         onChangeText={onChange}
         placeholder={placeholder}
-        placeholderTextColor="#9A9AA8"
+        placeholderTextColor={palette.boneDim}
         autoCapitalize="none"
         autoCorrect={false}
         returnKeyType="search"
         style={{
           flex: 1,
           marginLeft: 10,
-          color: "#E8E6E3",
+          color: palette.bone,
           fontSize: 15,
           paddingVertical: 0,
           ...(Platform.OS === "web"
@@ -963,7 +964,7 @@ function SearchInput({
       />
       {value.length > 0 && (
         <Pressable onPress={() => onChange("")}>
-          <Ionicons name="close-circle" size={18} color="#9A9AA8" />
+          <Ionicons name="close-circle" size={18} color={palette.boneDim} />
         </Pressable>
       )}
     </View>
@@ -1088,7 +1089,7 @@ function CardSelectTile({
             borderColor: accent,
             borderRadius: 14,
             overflow: "hidden",
-            backgroundColor: "#14111E",
+            backgroundColor: palette.lair800,
           }}
         >
           {imageUri ? (
@@ -1102,7 +1103,7 @@ function CardSelectTile({
           ) : (
             <View className="flex-1 items-center justify-center p-3">
               <Text
-                className="text-center font-brand text-sm text-foreground"
+                className="text-center font-brand text-sm text-bone"
                 numberOfLines={3}
               >
                 {card.name}
@@ -1122,26 +1123,26 @@ function CardSelectTile({
             minWidth: 30,
             height: 30,
             paddingHorizontal: limit.atLimit ? 8 : 0,
-            borderRadius: 15,
+            borderRadius: radii.full,
             backgroundColor: limit.atLimit
-              ? "rgba(42,42,51,0.95)"
-              : "rgba(212,178,94,0.95)",
+              ? alpha(palette.hairline, 0.95)
+              : alpha(palette.hoardGold, 0.95),
             alignItems: "center",
             justifyContent: "center",
-            shadowColor: "#000",
+            shadowColor: palette.black,
             shadowOpacity: 0.5,
             shadowRadius: 4,
             shadowOffset: { width: 0, height: 2 },
           }}
         >
           {loading ? (
-            <ActivityIndicator size="small" color="#0F0F12" />
+            <ActivityIndicator size="small" color={palette.lair900} />
           ) : limit.atLimit ? (
-            <Text className="text-xs font-bold text-foreground">
+            <Text className="text-xs font-bold text-bone">
               ×{limit.current}
             </Text>
           ) : (
-            <Ionicons name="add" size={20} color="#0F0F12" />
+            <Ionicons name="add" size={20} color={palette.lair900} />
           )}
         </View>
 
@@ -1157,13 +1158,13 @@ function CardSelectTile({
               left: 6,
               paddingHorizontal: 6,
               paddingVertical: 2,
-              borderRadius: 4,
-              backgroundColor: "rgba(15,15,18,0.85)",
+              borderRadius: radii.sm,
+              backgroundColor: alpha(palette.lair900, 0.85),
               borderWidth: 1,
-              borderColor: "rgba(212,178,94,0.5)",
+              borderColor: alpha(palette.hoardGold, 0.5),
             }}
           >
-            <Text className="text-[10px] font-semibold text-accent">
+            <Text className="text-[10px] font-semibold text-hoard-gold">
               {limit.current}
               {Number.isFinite(limit.max) ? `/${limit.max}` : ""} in deck
             </Text>
@@ -1183,7 +1184,7 @@ function CardSelectTile({
       >
         <Pressable
           onPress={() => setZoomed(false)}
-          className="flex-1 items-center justify-center bg-background/90"
+          className="flex-1 items-center justify-center bg-lair-900/90"
         >
           <View
             style={{
@@ -1194,8 +1195,8 @@ function CardSelectTile({
               overflow: "hidden",
               borderWidth: 2,
               borderColor: accent,
-              backgroundColor: "#14111E",
-              shadowColor: "#000",
+              backgroundColor: palette.lair800,
+              shadowColor: palette.black,
               shadowOpacity: 0.55,
               shadowRadius: 24,
               shadowOffset: { width: 0, height: 12 },
@@ -1212,7 +1213,7 @@ function CardSelectTile({
             ) : (
               <View className="flex-1 items-center justify-center p-6">
                 <Text
-                  className="text-center font-brand text-2xl text-foreground"
+                  className="text-center font-brand text-2xl text-bone"
                   numberOfLines={3}
                 >
                   {card.name}
@@ -1221,7 +1222,7 @@ function CardSelectTile({
             )}
           </View>
           <Text
-            className="mt-4 text-center text-xs uppercase tracking-wider text-muted"
+            className="mt-4 text-center text-xs uppercase tracking-wider text-bone-dim"
             style={{ opacity: 0.7 }}
           >
             Release to dismiss
@@ -1233,21 +1234,21 @@ function CardSelectTile({
 }
 
 function colorIdentityAccent(colors?: string[]): string {
-  if (!colors || colors.length === 0) return "#2A2A33";
-  if (colors.length > 1) return "#D4B25E";
+  if (!colors || colors.length === 0) return palette.hairline;
+  if (colors.length > 1) return palette.hoardGold;
   switch (colors[0]) {
     case "W":
-      return "#F8F6E8";
+      return palette.manaWhite;
     case "U":
-      return "#5C9EE5";
+      return palette.manaBlue;
     case "B":
-      return "#2D2A30";
+      return palette.manaBlack;
     case "R":
-      return "#D14B3D";
+      return palette.manaRed;
     case "G":
-      return "#5BA66B";
+      return palette.manaGreen;
     default:
-      return "#2A2A33";
+      return palette.hairline;
   }
 }
 
@@ -1312,8 +1313,8 @@ function AiSuggestionsPanel({
         style={{ gap: 8 }}
       >
         <View className="flex-row items-center" style={{ gap: 6 }}>
-          <Ionicons name="sparkles" size={16} color="#D4B25E" />
-          <Text className="text-xs uppercase tracking-wider text-accent">
+          <Ionicons name="sparkles" size={16} color={palette.hoardGold} />
+          <Text className="text-xs uppercase tracking-wider text-hoard-gold">
             AI suggestions
           </Text>
         </View>
@@ -1326,18 +1327,18 @@ function AiSuggestionsPanel({
               style={{
                 width: 28,
                 height: 28,
-                borderRadius: 14,
+                borderRadius: radii.full,
                 alignItems: "center",
                 justifyContent: "center",
                 backgroundColor: refreshing
-                  ? "rgba(212,178,94,0.10)"
-                  : "rgba(212,178,94,0.18)",
+                  ? alpha(palette.hoardGold, 0.10)
+                  : alpha(palette.hoardGold, 0.18),
               }}
             >
               {refreshing ? (
-                <ActivityIndicator size="small" color="#D4B25E" />
+                <ActivityIndicator size="small" color={palette.hoardGold} />
               ) : (
-                <Ionicons name="refresh" size={15} color="#D4B25E" />
+                <Ionicons name="refresh" size={15} color={palette.hoardGold} />
               )}
             </Pressable>
           )}
@@ -1346,37 +1347,37 @@ function AiSuggestionsPanel({
       </View>
 
       {!enabled && (
-        <Text className="mt-2 text-xs text-muted">
+        <Text className="mt-2 text-xs text-bone-dim">
           Turn on to get AI recommendations based on what&apos;s already in
           your deck.
         </Text>
       )}
 
       {enabled && !deckHasContent && (
-        <Text className="mt-3 text-sm text-muted">
+        <Text className="mt-3 text-sm text-bone-dim">
           Add a few cards first — the AI needs something to riff on.
         </Text>
       )}
 
       {enabled && deckHasContent && suggestLoading && (
         <View className="mt-3 items-center py-4">
-          <ActivityIndicator size="small" color="#D4B25E" />
-          <Text className="mt-2 text-xs text-muted">
+          <ActivityIndicator size="small" color={palette.hoardGold} />
+          <Text className="mt-2 text-xs text-bone-dim">
             Thinking… this can take a few seconds.
           </Text>
         </View>
       )}
 
       {enabled && unauthorized && (
-        <View className="mt-3 rounded-lg border border-border bg-elevated p-3">
-          <Text className="text-sm text-foreground">
+        <View className="mt-3 rounded-md border border-hairline bg-lair-700 p-3">
+          <Text className="text-sm text-bone">
             Sign in to enable AI suggestions on your deck.
           </Text>
         </View>
       )}
 
       {enabled && suggestError && !unauthorized && (
-        <View className="mt-3 rounded-lg bg-danger/20 p-3">
+        <View className="mt-3 rounded-md bg-danger/20 p-3">
           <Text className="text-sm text-danger">
             {(suggestError as Error).message}
           </Text>
@@ -1384,8 +1385,8 @@ function AiSuggestionsPanel({
       )}
 
       {enabled && suggestData?.summary && (
-        <View className="mt-4 rounded-lg border border-accent/40 bg-accent/5 p-3">
-          <Text className="text-sm text-foreground">{suggestData.summary}</Text>
+        <View className="mt-4 rounded-md border border-hoard-gold/40 bg-hoard-gold/5 p-3">
+          <Text className="text-sm text-bone">{suggestData.summary}</Text>
         </View>
       )}
 
@@ -1402,11 +1403,11 @@ function AiSuggestionsPanel({
       )}
 
       {enabled && allHidden && !refreshing && (
-        <View className="mt-4 rounded-lg border border-border bg-elevated p-3">
-          <Text className="text-sm text-foreground">
+        <View className="mt-4 rounded-md border border-hairline bg-lair-700 p-3">
+          <Text className="text-sm text-bone">
             All suggestions added.
           </Text>
-          <Text className="mt-1 text-xs text-muted">
+          <Text className="mt-1 text-xs text-bone-dim">
             Tap refresh for a fresh batch.
           </Text>
         </View>
@@ -1418,8 +1419,8 @@ function AiSuggestionsPanel({
           only appears once the deck hits target size. */}
       {enabled && deckHasContent && targetSize != null && !atTargetSize && (
         <View className="mt-4 flex-row items-center" style={{ gap: 8 }}>
-          <Ionicons name="information-circle-outline" size={14} color="#A39F93" />
-          <Text className="text-[11px] text-muted">
+          <Ionicons name="information-circle-outline" size={14} color={palette.boneDim} />
+          <Text className="text-[11px] text-bone-dim">
             Full deck review unlocks at {targetSize} cards.
           </Text>
         </View>
@@ -1435,25 +1436,25 @@ function AiSuggestionsPanel({
             className="mb-2 flex-row items-baseline justify-between"
             style={{ gap: 8 }}
           >
-            <Text className="text-[11px] uppercase tracking-wider text-muted">
+            <Text className="text-[11px] uppercase tracking-wider text-bone-dim">
               Findings
             </Text>
             {analyzeData?.summary && (
-              <Text className="text-[10px] text-muted">Overall review</Text>
+              <Text className="text-[10px] text-bone-dim">Overall review</Text>
             )}
           </View>
 
           {analyzeFetching && !analyzeData && (
             <View className="items-center py-4">
-              <ActivityIndicator size="small" color="#D4B25E" />
-              <Text className="mt-2 text-xs text-muted">
+              <ActivityIndicator size="small" color={palette.hoardGold} />
+              <Text className="mt-2 text-xs text-bone-dim">
                 Reviewing your deck…
               </Text>
             </View>
           )}
 
           {analyzeError && (
-            <View className="rounded-lg bg-danger/20 p-3">
+            <View className="rounded-md bg-danger/20 p-3">
               <Text className="text-sm text-danger">
                 {(analyzeError as Error).message}
               </Text>
@@ -1461,8 +1462,8 @@ function AiSuggestionsPanel({
           )}
 
           {analyzeData?.summary && (
-            <View className="mb-2 rounded-lg border border-accent/40 bg-accent/5 p-3">
-              <Text className="text-sm text-foreground">
+            <View className="mb-2 rounded-md border border-hoard-gold/40 bg-hoard-gold/5 p-3">
+              <Text className="text-sm text-bone">
                 {analyzeData.summary}
               </Text>
             </View>
@@ -1480,8 +1481,8 @@ function AiSuggestionsPanel({
             !analyzeError &&
             analyzeData &&
             findings.length === 0 && (
-              <View className="rounded-lg border border-border bg-elevated p-3">
-                <Text className="text-sm text-foreground">
+              <View className="rounded-md border border-hairline bg-lair-700 p-3">
+                <Text className="text-sm text-bone">
                   No issues spotted. Looks solid.
                 </Text>
               </View>
@@ -1502,10 +1503,10 @@ function SuggestionRow({
   return (
     <Pressable
       onPress={onSearch}
-      className="rounded-lg border border-border bg-elevated p-3 hover:bg-border/30 active:bg-border/30"
+      className="rounded-md border border-hairline bg-lair-700 p-3 hover:bg-hairline/30 active:bg-hairline/30"
     >
       <View className="flex-row items-center justify-between">
-        <Text className="flex-1 font-semibold text-foreground">
+        <Text className="flex-1 font-semibold text-bone">
           {suggestion.card_name}
         </Text>
         {suggestion.synergy_score != null && (
@@ -1513,18 +1514,18 @@ function SuggestionRow({
             style={{
               paddingHorizontal: 6,
               paddingVertical: 2,
-              borderRadius: 4,
-              backgroundColor: "rgba(212,178,94,0.18)",
+              borderRadius: radii.sm,
+              backgroundColor: alpha(palette.hoardGold, 0.18),
             }}
           >
-            <Text className="text-[10px] font-semibold text-accent">
+            <Text className="text-[10px] font-semibold text-hoard-gold">
               {suggestion.synergy_score}
             </Text>
           </View>
         )}
       </View>
       {suggestion.reason && (
-        <Text className="mt-1 text-xs leading-4 text-muted">
+        <Text className="mt-1 text-xs leading-4 text-bone-dim">
           {suggestion.reason}
         </Text>
       )}
@@ -1542,21 +1543,21 @@ function IssueRow({
     sev === "ERROR"
       ? "bg-danger/20 border-danger/40"
       : sev === "WARNING"
-        ? "bg-accent/15 border-accent/40"
-        : "bg-elevated border-border";
+        ? "bg-hoard-gold/15 border-hoard-gold/40"
+        : "bg-lair-700 border-hairline";
   const dotColor =
-    sev === "ERROR" ? "#D14B3D" : sev === "WARNING" ? "#D4B25E" : "#9A9AA8";
+    sev === "ERROR" ? palette.danger : sev === "WARNING" ? palette.warning : palette.boneDim;
   return (
-    <View className={`mt-2 rounded-lg border p-3 ${tint}`}>
+    <View className={`mt-2 rounded-md border p-3 ${tint}`}>
       <View className="flex-row items-center" style={{ gap: 6 }}>
         <View
-          style={{ width: 6, height: 6, borderRadius: 3, backgroundColor: dotColor }}
+          style={{ width: 6, height: 6, borderRadius: radii.full, backgroundColor: dotColor }}
         />
-        <Text className="text-xs uppercase tracking-wider text-foreground">
+        <Text className="text-xs uppercase tracking-wider text-bone">
           {issue.topic.replace(/_/g, " ")}
         </Text>
       </View>
-      <Text className="mt-1 text-sm text-foreground">{issue.reason}</Text>
+      <Text className="mt-1 text-sm text-bone">{issue.reason}</Text>
     </View>
   );
 }
@@ -1576,8 +1577,8 @@ function ToggleSwitch({
       style={{
         width: 42,
         height: 24,
-        borderRadius: 12,
-        backgroundColor: value ? "#D4B25E" : "#2A2A33",
+        borderRadius: radii.full,
+        backgroundColor: value ? palette.hoardGold : palette.hairline,
         padding: 2,
         justifyContent: "center",
       }}
@@ -1586,8 +1587,8 @@ function ToggleSwitch({
         style={{
           width: 20,
           height: 20,
-          borderRadius: 10,
-          backgroundColor: value ? "#0F0F12" : "#9A9AA8",
+          borderRadius: radii.full,
+          backgroundColor: value ? palette.lair900 : palette.boneDim,
           alignSelf: value ? "flex-end" : "flex-start",
         }}
       />
@@ -1630,27 +1631,27 @@ function CurrentDeckPanel({
 
   return (
     <View
-      className="rounded-xl border border-border"
-      style={{ backgroundColor: "#15151A", padding: 16 }}
+      className="rounded-lg border border-hairline"
+      style={{ backgroundColor: palette.lair800, padding: 16 }}
     >
       <View className="mb-3 flex-row items-baseline justify-between">
-        <Text className="text-xs uppercase tracking-wider text-muted">
+        <Text className="text-xs uppercase tracking-wider text-bone-dim">
           Your deck
         </Text>
-        <Text className="text-xs text-accent">
+        <Text className="text-xs text-hoard-gold">
           {totalCount} card{totalCount === 1 ? "" : "s"}
         </Text>
       </View>
 
       {isLoading && (
         <View className="items-center py-6">
-          <ActivityIndicator size="small" color="#D4B25E" />
+          <ActivityIndicator size="small" color={palette.hoardGold} />
         </View>
       )}
 
       {isEmpty && (
-        <View className="rounded-lg bg-elevated p-3">
-          <Text className="text-sm text-muted">
+        <View className="rounded-md bg-lair-700 p-3">
+          <Text className="text-sm text-bone-dim">
             Tap a card on the left to add it to your deck.
           </Text>
         </View>

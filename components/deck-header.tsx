@@ -12,6 +12,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { Text, View } from "react-native";
 
 import type { DeckCardDto, DeckDto } from "@/lib/queries/decks";
+import { alpha, palette, radii } from "@/lib/tokens";
 
 interface DeckHeaderProps {
   deck: DeckDto;
@@ -28,11 +29,11 @@ export function DeckHeader({ deck }: DeckHeaderProps) {
     <View
       style={{
         height: HERO_HEIGHT,
-        borderRadius: 16,
+        borderRadius: radii.lg,
         overflow: "hidden",
         borderWidth: 1,
         borderColor: accent,
-        backgroundColor: "#15151A",
+        backgroundColor: palette.lair800,
         // Soft accent glow around the hero — gives the banner the same
         // "active card" feel as the carousel.
         shadowColor: accent,
@@ -55,9 +56,9 @@ export function DeckHeader({ deck }: DeckHeaderProps) {
       ) : (
         <View
           className="flex-1 items-center justify-center"
-          style={{ backgroundColor: "#1C1C24" }}
+          style={{ backgroundColor: palette.lair700 }}
         >
-          <Text className="font-brand text-2xl text-muted">
+          <Text className="font-brand text-2xl text-bone-dim">
             {deck.format ?? "Deck"}
           </Text>
         </View>
@@ -66,10 +67,10 @@ export function DeckHeader({ deck }: DeckHeaderProps) {
       {/* Two-stop gradient: subtle top vignette + heavy bottom for text. */}
       <LinearGradient
         colors={[
-          "rgba(15,15,18,0.35)",
-          "rgba(15,15,18,0.05)",
-          "rgba(15,15,18,0.65)",
-          "rgba(15,15,18,0.92)",
+          alpha(palette.lair900, 0.35),
+          alpha(palette.lair900, 0.05),
+          alpha(palette.lair900, 0.65),
+          alpha(palette.lair900, 0.92),
         ]}
         locations={[0, 0.35, 0.7, 1]}
         style={{
@@ -91,13 +92,13 @@ export function DeckHeader({ deck }: DeckHeaderProps) {
         }}
       >
         <Text
-          className="font-brand text-foreground"
+          className="font-brand text-bone"
           style={{
             fontSize: 32,
             lineHeight: 36,
             // White text + soft drop shadow so it reads regardless of the
             // art behind it.
-            textShadowColor: "rgba(0,0,0,0.6)",
+            textShadowColor: alpha(palette.black, 0.6),
             textShadowRadius: 8,
           }}
           numberOfLines={2}
@@ -119,8 +120,8 @@ export function DeckHeader({ deck }: DeckHeaderProps) {
           <ColorIdentity colors={deck.colors} />
           {deck.favorites_count != null && deck.favorites_count > 0 && (
             <View className="flex-row items-center" style={{ gap: 3 }}>
-              <Ionicons name="heart" size={13} color="#D14B3D" />
-              <Text className="text-xs text-foreground">
+              <Ionicons name="heart" size={13} color={palette.manaRed} />
+              <Text className="text-xs text-bone">
                 {deck.favorites_count.toLocaleString()}
               </Text>
             </View>
@@ -158,12 +159,12 @@ function Tag({
 }) {
   const cls =
     variant === "accent"
-      ? "rounded-full border border-accent bg-accent/30 px-2.5 py-0.5"
+      ? "rounded-full border border-hoard-gold bg-hoard-gold/30 px-2.5 py-0.5"
       : "rounded-full border border-white/30 bg-black/40 px-2.5 py-0.5";
   const textCls =
     variant === "accent"
-      ? "text-[10px] font-semibold uppercase tracking-widest text-accent"
-      : "text-[10px] uppercase tracking-widest text-foreground";
+      ? "text-[10px] font-semibold uppercase tracking-widest text-hoard-gold"
+      : "text-[10px] uppercase tracking-widest text-bone";
   return (
     <View className={cls}>
       <Text className={textCls}>{label.replace(/_/g, " ")}</Text>
@@ -183,10 +184,10 @@ function ColorIdentity({ colors }: { colors?: string[] }) {
           style={{
             width: 14,
             height: 14,
-            borderRadius: 7,
+            borderRadius: radii.full,
             backgroundColor: colorHex(c),
             borderWidth: 1.5,
-            borderColor: "rgba(255,255,255,0.5)",
+            borderColor: alpha(palette.white, 0.5),
           }}
         />
       ))}
@@ -197,22 +198,22 @@ function ColorIdentity({ colors }: { colors?: string[] }) {
 function colorHex(code: string): string {
   switch (code) {
     case "W":
-      return "#F8F6E8";
+      return palette.manaWhite;
     case "U":
-      return "#5C9EE5";
+      return palette.manaBlue;
     case "B":
-      return "#2D2A30";
+      return palette.manaBlack;
     case "R":
-      return "#D14B3D";
+      return palette.manaRed;
     case "G":
-      return "#5BA66B";
+      return palette.manaGreen;
     default:
-      return "#2A2A33";
+      return palette.hairline;
   }
 }
 
 function aggregateColorAccent(colors?: string[]): string {
-  if (!colors || colors.length === 0) return "#2A2A33";
-  if (colors.length > 1) return "#D4B25E";
+  if (!colors || colors.length === 0) return palette.hairline;
+  if (colors.length > 1) return palette.hoardGold;
   return colorHex(colors[0]);
 }

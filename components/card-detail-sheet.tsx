@@ -18,6 +18,7 @@ import BottomSheet, {
 import { useCallback, useEffect, useMemo, useRef } from "react";
 
 import { CardDetailContent } from "@/components/card-detail-content";
+import { palette } from "@/lib/tokens";
 
 interface CardDetailSheetProps {
   cardId: string | null;
@@ -74,8 +75,8 @@ export function CardDetailSheet({ cardId, onClose }: CardDetailSheetProps) {
       onChange={handleChange}
       enablePanDownToClose
       backdropComponent={renderBackdrop}
-      backgroundStyle={{ backgroundColor: "#15151A" }}
-      handleIndicatorStyle={{ backgroundColor: "#9A9AA8", width: 40 }}
+      backgroundStyle={{ backgroundColor: palette.lair800 }}
+      handleIndicatorStyle={{ backgroundColor: palette.boneDim, width: 40 }}
     >
       {cardId && (
         <BottomSheetScrollView

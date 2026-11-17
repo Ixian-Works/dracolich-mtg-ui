@@ -24,6 +24,7 @@ import { DeckTile } from "@/components/deck-tile";
 import { PageContent } from "@/components/page-content";
 import { useAuth } from "@/lib/auth";
 import { useMyDecks, type DeckDto } from "@/lib/queries/decks";
+import { alpha, palette } from "@/lib/tokens";
 
 const TILE_WIDTH = 180;
 
@@ -52,25 +53,25 @@ export default function MyDecksScreen() {
       <PageContent style={{ paddingHorizontal: 24 }}>
         <View className="pt-8" style={{ gap: 8 }}>
           <Text
-            className="font-brand text-foreground"
+            className="font-brand text-bone"
             style={{
               fontSize: 32,
               fontWeight: "700",
               ...(Platform.OS === "web"
-                ? ({ textShadow: "0 0 22px rgba(155, 107, 242, 0.45)" } as object)
+                ? ({ textShadow: `0 0 22px ${alpha(palette.soulfire, 0.45)}` } as object)
                 : {}),
             }}
           >
             My decks
           </Text>
-          <Text className="text-muted" style={{ fontSize: 14 }}>
+          <Text className="text-bone-dim" style={{ fontSize: 14 }}>
             Your saved deck collection, including drafts in progress.
           </Text>
         </View>
 
         <DeckSection
           icon="checkmark-circle-outline"
-          iconColor="#5BA66B"
+          iconColor={palette.success}
           title="Ready"
           subtitle="Finalized decks ready to play."
           query={readyDecks}
@@ -80,7 +81,7 @@ export default function MyDecksScreen() {
 
         <DeckSection
           icon="document-text-outline"
-          iconColor="#9B6BF2"
+          iconColor={palette.soulfire}
           title="Drafts"
           subtitle="Decks you started but haven’t finalized — pick up where you left off."
           query={draftDecks}
@@ -128,28 +129,28 @@ function DeckSection({
         <View className="flex-row items-center" style={{ gap: 10 }}>
           <Ionicons name={icon} size={20} color={iconColor} />
           <Text
-            className="font-brand text-foreground"
+            className="font-brand text-bone"
             style={{ fontSize: 22, fontWeight: "600" }}
           >
             {title}
           </Text>
           {data && (
-            <Text className="text-xs text-muted">
+            <Text className="text-xs text-bone-dim">
               ({count.toLocaleString()})
             </Text>
           )}
         </View>
       </View>
-      <Text className="mb-4 text-xs text-muted">{subtitle}</Text>
+      <Text className="mb-4 text-xs text-bone-dim">{subtitle}</Text>
 
       {isLoading && (
         <View className="items-center py-8">
-          <ActivityIndicator color="#9B6BF2" />
+          <ActivityIndicator color={palette.soulfire} />
         </View>
       )}
 
       {error && (
-        <View className="rounded-lg bg-danger/20 p-3">
+        <View className="rounded-md bg-danger/20 p-3">
           <Text className="text-sm text-danger">
             {(error as Error).message}
           </Text>
@@ -157,9 +158,9 @@ function DeckSection({
       )}
 
       {!isLoading && !error && decks.length === 0 && (
-        <View className="items-center justify-center rounded-xl border border-dashed border-border py-10">
+        <View className="items-center justify-center rounded-lg border border-dashed border-hairline py-10">
           <Text
-            className="text-sm text-muted"
+            className="text-sm text-bone-dim"
             style={{ textAlign: "center", paddingHorizontal: 16 }}
           >
             {emptyHint}
@@ -187,13 +188,13 @@ function DeckSection({
 
 function SignInPrompt() {
   return (
-    <View className="flex-1 items-center justify-center bg-background p-6">
-      <Text className="font-brand text-3xl text-accent">My decks</Text>
-      <Text className="mt-2 text-center text-muted">
+    <View className="flex-1 items-center justify-center bg-lair-900 p-6">
+      <Text className="font-brand text-3xl text-hoard-gold">My decks</Text>
+      <Text className="mt-2 text-center text-bone-dim">
         Sign in to see your saved decks and drafts.
       </Text>
       <Link href="/login" asChild>
-        <Pressable className="mt-6 rounded-lg bg-primary px-6 py-3">
+        <Pressable className="mt-6 rounded-md bg-soulfire px-6 py-3">
           <Text className="font-semibold text-white">Sign in</Text>
         </Pressable>
       </Link>

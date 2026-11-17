@@ -10,6 +10,7 @@
 import { Ionicons } from "@expo/vector-icons";
 import { Link } from "expo-router";
 import { Platform, Pressable, Text, View } from "react-native";
+import { alpha, palette } from "@/lib/tokens";
 
 interface UnderConstructionProps {
   title: string;
@@ -26,19 +27,19 @@ export function UnderConstruction({
   secondaryHref,
 }: UnderConstructionProps) {
   return (
-    <View className="flex-1 items-center justify-center bg-background p-6">
+    <View className="flex-1 items-center justify-center bg-lair-900 p-6">
       <View
-        className="w-full max-w-md items-center rounded-2xl border border-border p-8"
+        className="w-full max-w-md items-center rounded-lg border border-hairline p-8"
         style={{
-          backgroundColor: "rgba(20, 17, 30, 0.78)",
+          backgroundColor: alpha(palette.lair800, 0.78),
           ...(Platform.OS === "web"
             ? ({
                 backdropFilter: "blur(16px)",
                 WebkitBackdropFilter: "blur(16px)",
-                boxShadow: "0 0 32px rgba(155, 107, 242, 0.25)",
+                boxShadow: `0 0 32px ${alpha(palette.soulfire, 0.25)}`,
               } as object)
             : {
-                shadowColor: "#9B6BF2",
+                shadowColor: palette.soulfire,
                 shadowOffset: { width: 0, height: 0 },
                 shadowOpacity: 0.3,
                 shadowRadius: 18,
@@ -47,35 +48,35 @@ export function UnderConstruction({
       >
         {/* Decorative icon — purple glow on web. */}
         <View
-          className="mb-5 items-center justify-center rounded-full bg-primary/15"
+          className="mb-5 items-center justify-center rounded-full bg-soulfire/15"
           style={{
             width: 72,
             height: 72,
             ...(Platform.OS === "web"
-              ? ({ boxShadow: "0 0 28px rgba(155, 107, 242, 0.45)" } as object)
+              ? ({ boxShadow: `0 0 28px ${alpha(palette.soulfire, 0.45)}` } as object)
               : {}),
           }}
         >
-          <Ionicons name="construct-outline" size={36} color="#9B6BF2" />
+          <Ionicons name="construct-outline" size={36} color={palette.soulfire} />
         </View>
 
         <Text
-          className="text-center font-brand text-foreground"
+          className="text-center font-brand text-bone"
           style={{
             fontSize: 26,
             fontWeight: "700",
             ...(Platform.OS === "web"
-              ? ({ textShadow: "0 0 16px rgba(155, 107, 242, 0.4)" } as object)
+              ? ({ textShadow: `0 0 16px ${alpha(palette.soulfire, 0.4)}` } as object)
               : {}),
           }}
         >
           {title}
         </Text>
-        <Text className="mt-2 text-center text-sm uppercase tracking-wider text-accent">
+        <Text className="mt-2 text-center text-sm uppercase tracking-wider text-hoard-gold">
           Under construction
         </Text>
 
-        <Text className="mt-4 text-center text-muted">
+        <Text className="mt-4 text-center text-bone-dim">
           {message ?? "This corner of Dracolich is still being built. Check back soon — it'll be here."}
         </Text>
 
@@ -84,14 +85,14 @@ export function UnderConstruction({
           style={{ gap: 12 }}
         >
           <Link href={"/" as any} asChild>
-            <Pressable className="rounded-lg bg-primary px-5 py-2.5 hover:bg-primary/90 active:bg-primary/80">
+            <Pressable className="rounded-md bg-soulfire px-5 py-2.5 hover:bg-soulfire/90 active:bg-soulfire/80">
               <Text className="font-semibold text-white">Back to home</Text>
             </Pressable>
           </Link>
           {secondaryHref && secondaryLabel && (
             <Link href={secondaryHref as any} asChild>
-              <Pressable className="rounded-lg border border-border px-5 py-2.5 hover:bg-elevated active:bg-elevated/80">
-                <Text className="text-foreground">{secondaryLabel}</Text>
+              <Pressable className="rounded-md border border-hairline px-5 py-2.5 hover:bg-lair-700 active:bg-lair-700/80">
+                <Text className="text-bone">{secondaryLabel}</Text>
               </Pressable>
             </Link>
           )}

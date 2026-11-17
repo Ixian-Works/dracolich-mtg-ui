@@ -21,6 +21,7 @@ import { useCallback, useEffect, useMemo, useRef } from "react";
 import { ActivityIndicator, Pressable, Text, View } from "react-native";
 
 import { CardDetailContent } from "@/components/card-detail-content";
+import { palette } from "@/lib/tokens";
 
 interface DeckCardSheetProps {
   // The card to preview. Null = sheet closed.
@@ -82,8 +83,8 @@ export function DeckCardSheet({
       onChange={handleChange}
       enablePanDownToClose
       backdropComponent={renderBackdrop}
-      backgroundStyle={{ backgroundColor: "#15151A" }}
-      handleIndicatorStyle={{ backgroundColor: "#9A9AA8", width: 40 }}
+      backgroundStyle={{ backgroundColor: palette.lair800 }}
+      handleIndicatorStyle={{ backgroundColor: palette.boneDim, width: 40 }}
     >
       {cardId && (
         <BottomSheetScrollView
@@ -96,13 +97,13 @@ export function DeckCardSheet({
               onPress={removing ? undefined : handleRemove}
               disabled={removing}
               accessibilityLabel="Remove from deck"
-              className="mt-6 flex-row items-center justify-center rounded-lg border border-danger/40 px-5 py-3 hover:bg-danger/10 active:bg-danger/20"
+              className="mt-6 flex-row items-center justify-center rounded-md border border-danger/40 px-5 py-3 hover:bg-danger/10 active:bg-danger/20"
               style={{ gap: 8, opacity: removing ? 0.6 : 1 }}
             >
               {removing ? (
-                <ActivityIndicator size="small" color="#D14B3D" />
+                <ActivityIndicator size="small" color={palette.danger} />
               ) : (
-                <Ionicons name="trash-outline" size={18} color="#D14B3D" />
+                <Ionicons name="trash-outline" size={18} color={palette.danger} />
               )}
               <Text className="font-semibold text-danger">
                 {removing ? "Removing…" : "Remove from deck"}

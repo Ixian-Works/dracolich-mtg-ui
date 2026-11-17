@@ -26,6 +26,7 @@ import Animated, {
   withSpring,
   withTiming,
 } from "react-native-reanimated";
+import { palette } from "@/lib/tokens";
 
 interface SearchBarProps {
   value: string;
@@ -47,13 +48,13 @@ const COLLAPSED_WIDTH = 44;
 const HEIGHT = 44;
 const EXPAND_SPRING = { damping: 18, stiffness: 200 };
 
-// Theme tokens — kept inline rather than via className so they work on
+// Tokens read into constants rather than used via className, so they work on
 // Reanimated wrappers (NativeWind v4 doesn't auto-cssInterop Animated.View).
-const BG = "#1C1C24";
-const BORDER = "#2A2A33";
-const FG = "#E8E6E3";
-const MUTED = "#9A9AA8";
-const ACCENT = "#D4B25E";
+const BG = palette.lair700;
+const BORDER = palette.hairline;
+const FG = palette.bone;
+const MUTED = palette.boneDim;
+const ACCENT = palette.hoardGold;
 
 export function SearchBar({
   value,

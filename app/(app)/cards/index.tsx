@@ -38,6 +38,7 @@ import {
 import { PageContent } from "@/components/page-content";
 import { useNewestCards, useSearchCards, type CardDto } from "@/lib/queries/cards";
 import { useSearchQuery } from "@/lib/search";
+import { palette } from "@/lib/tokens";
 
 const WIDE_BREAKPOINT = 768;
 
@@ -120,8 +121,8 @@ export default function CardsSearchScreen() {
       >
         <PageContent>
           <View className="px-6">
-            <Text className="mb-1 font-brand text-3xl text-accent">Cards</Text>
-            <Text className="mb-4 text-muted">{subtitle}</Text>
+            <Text className="mb-1 font-brand text-3xl text-hoard-gold">Cards</Text>
+            <Text className="mb-4 text-bone-dim">{subtitle}</Text>
           </View>
 
           {/* Filter chips — horizontal scroll, padded so they don't clip the
@@ -136,14 +137,14 @@ export default function CardsSearchScreen() {
           <View className="px-6">
             {isLoading && (
               <View className="items-center py-8">
-                <ActivityIndicator size="large" color="#D4B25E" />
+                <ActivityIndicator size="large" color={palette.hoardGold} />
               </View>
             )}
 
             {error && (
-              <View className="rounded-lg bg-danger/20 p-4">
+              <View className="rounded-md bg-danger/20 p-4">
                 <Text className="font-semibold text-danger">Request failed</Text>
-                <Text className="mt-1 text-foreground">
+                <Text className="mt-1 text-bone">
                   {(error as Error).message}
                 </Text>
               </View>
@@ -153,15 +154,15 @@ export default function CardsSearchScreen() {
           {data && (
             <>
               <View className="mb-4 px-6">
-                <Text className="text-sm text-muted">
+                <Text className="text-sm text-bone-dim">
                   {data.totalElements.toLocaleString()} cards · page{" "}
                   {data.number + 1} of {data.totalPages.toLocaleString()}
                 </Text>
               </View>
 
               {data.content.length === 0 && (
-                <View className="mx-6 rounded-lg border border-border bg-elevated p-4">
-                  <Text className="text-foreground">No cards matched.</Text>
+                <View className="mx-6 rounded-md border border-hairline bg-lair-700 p-4">
+                  <Text className="text-bone">No cards matched.</Text>
                 </View>
               )}
 
@@ -174,7 +175,7 @@ export default function CardsSearchScreen() {
                   />
 
                   <View className="mt-8 px-6">
-                    <Text className="mb-3 text-xs uppercase tracking-wider text-muted">
+                    <Text className="mb-3 text-xs uppercase tracking-wider text-bone-dim">
                       All results
                     </Text>
                     {data.content.map((card) => (

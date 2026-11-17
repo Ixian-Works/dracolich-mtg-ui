@@ -18,20 +18,20 @@ export default function CardDetailScreen() {
 
   if (!id) {
     return (
-      <View className="flex-1 items-center justify-center bg-background p-6">
-        <Text className="text-foreground">No card id provided.</Text>
+      <View className="flex-1 items-center justify-center bg-lair-900 p-6">
+        <Text className="text-bone">No card id provided.</Text>
       </View>
     );
   }
 
   return (
-    <View className="flex-1 bg-background">
+    <View className="flex-1 bg-lair-900">
       <View className="px-6 pt-4">
         <Pressable
           onPress={() => router.back()}
-          className="self-start rounded-md px-3 py-1.5 hover:bg-elevated active:bg-elevated"
+          className="self-start rounded-md px-3 py-1.5 hover:bg-lair-700 active:bg-lair-700"
         >
-          <Text className="text-sm text-accent">← Back</Text>
+          <Text className="text-sm text-hoard-gold">← Back</Text>
         </Pressable>
       </View>
 

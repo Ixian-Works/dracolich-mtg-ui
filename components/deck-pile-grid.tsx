@@ -23,6 +23,7 @@ import Animated, {
 
 import { useHoverPreviewWithCleanup } from "@/components/hover-preview";
 import type { DeckCardDto, DeckDto } from "@/lib/queries/decks";
+import { palette, radii } from "@/lib/tokens";
 
 // Standard MTG card aspect (63mm × 88mm).
 const CARD_ASPECT = 63 / 88;
@@ -168,11 +169,11 @@ function CommanderHero({
         className="mb-4 flex-row items-baseline"
         style={{ gap: 10 }}
       >
-        <Text className="font-brand text-3xl text-foreground">Commander</Text>
-        <Text className="font-brand text-xl text-accent">{cards.length}</Text>
+        <Text className="font-brand text-3xl text-bone">Commander</Text>
+        <Text className="font-brand text-xl text-hoard-gold">{cards.length}</Text>
       </View>
       <View
-        style={{ height: 2, width: 48, backgroundColor: "#D4B25E", borderRadius: 1, marginBottom: 16 }}
+        style={{ height: 2, width: 48, backgroundColor: palette.hoardGold, borderRadius: radii.full, marginBottom: 16 }}
       />
       <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 20 }}>
         {cards.map((c) => (
@@ -239,8 +240,8 @@ function CommanderCard({
           borderWidth: 2,
           borderColor: accent,
           overflow: "hidden",
-          backgroundColor: "#1C1C24",
-          shadowColor: "#000",
+          backgroundColor: palette.lair700,
+          shadowColor: palette.black,
           shadowOffset: { width: 0, height: 8 },
         },
         liftStyle,
@@ -270,7 +271,7 @@ function CommanderCard({
         ) : (
           <View className="flex-1 items-center justify-center p-4">
             <Text
-              className="text-center font-brand text-lg text-foreground"
+              className="text-center font-brand text-lg text-bone"
               numberOfLines={3}
             >
               {card.name}
@@ -313,16 +314,16 @@ function PileSection({
         className="mb-5"
       >
         <View className="flex-row items-baseline" style={{ gap: 10 }}>
-          <Text className="font-brand text-3xl text-foreground">{title}</Text>
-          <Text className="font-brand text-xl text-accent">{total}</Text>
+          <Text className="font-brand text-3xl text-bone">{title}</Text>
+          <Text className="font-brand text-xl text-hoard-gold">{total}</Text>
         </View>
         <View
           className="mt-2"
           style={{
             height: 2,
             width: 48,
-            backgroundColor: "#D4B25E",
-            borderRadius: 1,
+            backgroundColor: palette.hoardGold,
+            borderRadius: radii.full,
           }}
         />
       </Animated.View>
@@ -435,12 +436,12 @@ function TypePile({
           style={{ gap: 8 }}
         >
           <Text
-            className="font-brand text-lg text-accent"
+            className="font-brand text-lg text-hoard-gold"
             numberOfLines={1}
           >
             {pluralize(type, total)}
           </Text>
-          <Text className="text-xs text-muted">{total}</Text>
+          <Text className="text-xs text-bone-dim">{total}</Text>
         </View>
 
         <Animated.View style={[{ position: "relative" }, containerHeightStyle]}>
@@ -525,7 +526,7 @@ function PileCard({
           overflow: "hidden",
           borderWidth: 1,
           borderColor: accent,
-          backgroundColor: "#1C1C24",
+          backgroundColor: palette.lair700,
         },
         positionStyle,
       ]}
@@ -548,7 +549,7 @@ function PileCard({
         ) : (
           <View className="flex-1 items-center justify-center p-2">
             <Text
-              className="text-center text-xs text-foreground"
+              className="text-center text-xs text-bone"
               numberOfLines={2}
             >
               {card.name}
@@ -601,20 +602,20 @@ function pluralize(type: string, count: number): string {
 }
 
 function colorIdentityAccent(colors?: string[]): string {
-  if (!colors || colors.length === 0) return "#2A2A33";
-  if (colors.length > 1) return "#D4B25E";
+  if (!colors || colors.length === 0) return palette.hairline;
+  if (colors.length > 1) return palette.hoardGold;
   switch (colors[0]) {
     case "W":
-      return "#F8F6E8";
+      return palette.manaWhite;
     case "U":
-      return "#5C9EE5";
+      return palette.manaBlue;
     case "B":
-      return "#2D2A30";
+      return palette.manaBlack;
     case "R":
-      return "#D14B3D";
+      return palette.manaRed;
     case "G":
-      return "#5BA66B";
+      return palette.manaGreen;
     default:
-      return "#2A2A33";
+      return palette.hairline;
   }
 }

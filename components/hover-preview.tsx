@@ -39,6 +39,7 @@ import {
 } from "react-native";
 
 import { ManaCost } from "@/components/mana-cost";
+import { palette } from "@/lib/tokens";
 
 // Standard MTG card aspect (63mm × 88mm).
 const CARD_ASPECT = 63 / 88;
@@ -283,8 +284,8 @@ function PreviewOverlay({
           borderWidth: 2,
           borderColor: accent,
           overflow: "hidden",
-          backgroundColor: "#1C1C24",
-          shadowColor: "#000",
+          backgroundColor: palette.lair700,
+          shadowColor: palette.black,
           shadowOpacity: 0.55,
           shadowRadius: 24,
           shadowOffset: { width: 0, height: 12 },
@@ -302,7 +303,7 @@ function PreviewOverlay({
         ) : (
           <View className="flex-1 items-center justify-center p-6">
             <Text
-              className="text-center font-brand text-2xl text-foreground"
+              className="text-center font-brand text-2xl text-bone"
               numberOfLines={3}
             >
               {card.name}
@@ -313,7 +314,7 @@ function PreviewOverlay({
               </View>
             )}
             {card.typeLine && (
-              <Text className="mt-2 text-center text-sm text-muted">
+              <Text className="mt-2 text-center text-sm text-bone-dim">
                 {card.typeLine}
               </Text>
             )}
@@ -325,20 +326,20 @@ function PreviewOverlay({
 }
 
 function colorIdentityAccent(colors?: string[]): string {
-  if (!colors || colors.length === 0) return "#2A2A33";
-  if (colors.length > 1) return "#D4B25E";
+  if (!colors || colors.length === 0) return palette.hairline;
+  if (colors.length > 1) return palette.hoardGold;
   switch (colors[0]) {
     case "W":
-      return "#F8F6E8";
+      return palette.manaWhite;
     case "U":
-      return "#5C9EE5";
+      return palette.manaBlue;
     case "B":
-      return "#2D2A30";
+      return palette.manaBlack;
     case "R":
-      return "#D14B3D";
+      return palette.manaRed;
     case "G":
-      return "#5BA66B";
+      return palette.manaGreen;
     default:
-      return "#2A2A33";
+      return palette.hairline;
   }
 }

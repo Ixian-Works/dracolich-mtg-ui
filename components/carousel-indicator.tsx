@@ -23,6 +23,7 @@ import Animated, {
   withTiming,
   type SharedValue,
 } from "react-native-reanimated";
+import { palette, radii } from "@/lib/tokens";
 
 interface CarouselIndicatorProps {
   currentIndex: number; // JS state — drives fade timer + counter text
@@ -40,11 +41,11 @@ const IDLE_OPACITY = 0.35;
 const FADE_IN_MS = 200;
 const FADE_OUT_MS = 600;
 
-// Theme tokens — kept in sync with tailwind.config.js. Inlined because
-// interpolateColor needs literal color strings on the UI thread.
-const COLOR_BORDER = "#2A2A33";
-const COLOR_ACCENT = "#D4B25E";
-const COLOR_MUTED = "#9A9AA8";
+// Tokens read once into constants, because interpolateColor needs plain
+// colour strings on the UI thread.
+const COLOR_BORDER = palette.hairline;
+const COLOR_ACCENT = palette.hoardGold;
+const COLOR_MUTED = palette.boneDim;
 
 const DOT_BASE_SIZE = 6;
 const DOT_ACTIVE_WIDTH = 16;
@@ -204,14 +205,14 @@ function ProgressBar({
         style={{
           width: 200,
           height: 4,
-          borderRadius: 2,
+          borderRadius: radii.full,
           backgroundColor: COLOR_BORDER,
           overflow: "hidden",
         }}
       >
         <Animated.View
           style={[
-            { height: "100%", borderRadius: 2, backgroundColor: COLOR_ACCENT },
+            { height: "100%", borderRadius: radii.full, backgroundColor: COLOR_ACCENT },
             fillStyle,
           ]}
         />

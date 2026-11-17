@@ -6,6 +6,7 @@
 // take the accent color; unselected get a subtle border/elevated bg.
 
 import { Pressable, ScrollView, Text, View } from "react-native";
+import { palette } from "@/lib/tokens";
 
 interface ChipProps {
   label: string;
@@ -21,8 +22,8 @@ export function Chip({ label, selected, onPress, swatchColor }: ChipProps) {
       onPress={onPress}
       className={`flex-row items-center rounded-full border px-3 py-1.5 ${
         selected
-          ? "border-accent bg-accent/20"
-          : "border-border bg-elevated hover:bg-border/40 active:bg-border/40"
+          ? "border-hoard-gold bg-hoard-gold/20"
+          : "border-hairline bg-lair-700 hover:bg-hairline/40 active:bg-hairline/40"
       }`}
     >
       {swatchColor && (
@@ -32,7 +33,7 @@ export function Chip({ label, selected, onPress, swatchColor }: ChipProps) {
         />
       )}
       <Text
-        className={`text-sm ${selected ? "text-accent" : "text-foreground"}`}
+        className={`text-sm ${selected ? "text-hoard-gold" : "text-bone"}`}
       >
         {label}
       </Text>
@@ -45,11 +46,11 @@ export function Chip({ label, selected, onPress, swatchColor }: ChipProps) {
 // Exported so other surfaces (e.g. the wizard's build page) can render
 // their own filter rows without redeclaring the lists.
 export const MTG_COLORS = [
-  { code: "W", label: "White", color: "#F8F6E8" },
-  { code: "U", label: "Blue", color: "#5C9EE5" },
-  { code: "B", label: "Black", color: "#2D2A30" },
-  { code: "R", label: "Red", color: "#D14B3D" },
-  { code: "G", label: "Green", color: "#5BA66B" },
+  { code: "W", label: "White", color: palette.manaWhite },
+  { code: "U", label: "Blue", color: palette.manaBlue },
+  { code: "B", label: "Black", color: palette.manaBlack },
+  { code: "R", label: "Red", color: palette.manaRed },
+  { code: "G", label: "Green", color: palette.manaGreen },
 ] as const;
 
 export const CARD_TYPES = [
