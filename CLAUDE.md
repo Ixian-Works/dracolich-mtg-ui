@@ -90,15 +90,44 @@ GestureHandlerRootView           reanimated needs this at the absolute root
 
 ## Auth flow (`lib/auth.tsx`)
 
-- `useAuth()` exposes `{ user, login, register, logout, isLoading }`
-- Tokens stored via `lib/storage.ts` (cross-platform: SecureStore on native, localStorage on web)
-- JWT decoded client-side to populate `user` (id, username) — verification stays server-side
+- `useAuth()` exposes `{ user, login, register, logout, loading }`
+- Tokens stored via `lib/storage.ts` (cross-platform: SecureStore on native, localStorage on web).
+  Only `lib/api.ts` writes or removes them (`storeSession`, `clearSession`, `refreshSession`).
+- JWT decoded client-side (`lib/jwt.ts`) to populate `user` (id, username) — verification stays server-side
 - `register()` returns `{ autoSignedIn: true } | { autoSignedIn: false; message: string }` so the signup screen knows whether to close the modal or show "check your email"
 - `logout()` is gated by a themed confirm dialog (see `confirmDialog` below)
-- **Refresh-token rotation ships** in `lib/api.ts`: a 401 on any non-`/auth/*` request triggers a
-  single-flight silent refresh and one retry of the original request. Concurrent 401s all await the
-  same promise. On refresh failure the tokens are purged and `onSessionExpired` (registered by
-  `AuthProvider` via `setOnSessionExpired`) fires so React state matches reality.
+- **Refresh-token rotation ships** in `lib/api.ts`, as one single-flight `refreshSession()` that every
+  caller shares:
+  - **Before a request:** an access token that has expired, or will within 30 seconds, is renewed
+    first. A dead token is never sent. `/auth/*` requests are the exception: they go without a token
+    and without waiting.
+  - **On start:** `AuthProvider` shows the player from the stored token at once and, if that token is
+    stale, renews it in the background.
+  - **On a 401** to a request that carried a token: one refresh, then one retry of that request.
+  - **When the refresh fails:** only a 401 or 403 from user-api ends the session. The tokens are
+    removed and `onSessionExpired` (registered by `AuthProvider` via `setOnSessionExpired`) fires
+    once. No network, a timeout or a 5xx keeps the tokens and the player signed in; the request
+    fails with that error.
+- **Signing out** removes the tokens on the device first, then calls `POST /auth/logout` with the
+  refresh token. It succeeds on the device even when that call fails.
+- **Sign-out and session expiry reset the TanStack Query cache**, so the next player on the device
+  never sees the last one's data, on screen or cached.
+
+## Tests
+
+```bash
+npm test                 # Jest with jest-expo and React Native Testing Library
+npx jest lib/api.test.ts # one file
+```
+
+- A test sits beside the file it tests, as `<name>.test.ts(x)`. Never under `app/`: expo-router
+  turns every file there into a route.
+- **No test reaches the network.** `jest.setup.ts` installs `test/fake-api.ts` as axios's adapter.
+  A test gives each request an answer with `fakeApi.on(method, pathEnding, handler)` and reads what
+  was sent from `fakeApi.requests`. A request with no answer fails the test.
+- `jest.setup.ts` also replaces `expo-secure-store` with an in-memory store, emptied before each
+  test. `test/tokens.ts` makes access tokens with a chosen expiry.
+- Covered so far: `lib/api.ts` (refresh, retry, session expiry), `lib/auth.tsx` and `lib/jwt.ts`.
 
 ## Themed confirm dialog (`lib/dialogs.ts` + `components/dialog-provider.tsx`)
 
