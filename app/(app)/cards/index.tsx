@@ -21,6 +21,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   ActivityIndicator,
   ScrollView,
+  RefreshControl,
   Text,
   View,
   useWindowDimensions,
@@ -115,8 +116,7 @@ export default function CardsSearchScreen() {
       <ScrollView
         className="flex-1"
         contentContainerStyle={{ paddingVertical: 24, paddingRight: scrollPaddingRight }}
-        refreshing={isRefetching}
-        onRefresh={refetch}
+        refreshControl={<RefreshControl refreshing={isRefetching} onRefresh={refetch} />}
       >
         <PageContent>
           <View className="px-6">

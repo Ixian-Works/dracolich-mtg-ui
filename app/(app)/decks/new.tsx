@@ -302,8 +302,8 @@ export default function NewDeckScreen() {
             <View className="mt-3">
               <Text className="mb-2 text-xs text-muted">
                 Paste a list in Moxfield / Scryfall format. Use{" "}
-                <Text className="text-foreground">// Sideboard</Text> /{" "}
-                <Text className="text-foreground">// Commander</Text>{" "}
+                <Text className="text-foreground">{"// Sideboard"}</Text> /{" "}
+                <Text className="text-foreground">{"// Commander"}</Text>{" "}
                 markers for sections. Lines that don&apos;t resolve to a
                 card will fail the whole import (strict mode).
               </Text>

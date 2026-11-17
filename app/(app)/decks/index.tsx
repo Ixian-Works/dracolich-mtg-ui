@@ -18,6 +18,7 @@ import {
   ActivityIndicator,
   Platform,
   Pressable,
+  RefreshControl,
   ScrollView,
   Text,
   View,
@@ -41,11 +42,15 @@ export default function DecksScreen() {
       className="flex-1"
       contentContainerClassName="py-6"
       // Pull-to-refresh refetches both rows.
-      refreshing={popular.isRefetching || latest.isRefetching}
-      onRefresh={() => {
-        popular.refetch();
-        latest.refetch();
-      }}
+      refreshControl={
+        <RefreshControl
+          refreshing={popular.isRefetching || latest.isRefetching}
+          onRefresh={() => {
+            popular.refetch();
+            latest.refetch();
+          }}
+        />
+      }
     >
       <PageContent>
         <View className="mb-6 px-6">
