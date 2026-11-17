@@ -1,0 +1,38 @@
+name: PR Validation
+on:
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  # Named "test" to match the required status check in the service repos' ruleset.
+  test:
+    runs-on: ubuntu-latest
+    env:
+      # lib/env.ts throws at import time without it. The build never calls it.
+      EXPO_PUBLIC_API_BASE: https://api.example.invalid
+      EXPO_NO_TELEMETRY: 1
+      CI: 1
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Type check
+        run: npx tsc --noEmit
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Build for web
+        run: npx expo export --platform web --output-dir dist
