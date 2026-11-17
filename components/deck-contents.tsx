@@ -118,9 +118,9 @@ function BoardSection({
   onCardPress?: (cardId: string) => void;
   containerWidth: number;
 }) {
-  if (cards.length === 0) return null;
   const groups = useMemo(() => groupByType(cards), [cards]);
   const total = useMemo(() => totalCardCount(cards), [cards]);
+  if (cards.length === 0) return null;
 
   return (
     <View className="mb-8">
