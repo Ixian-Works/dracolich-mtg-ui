@@ -13,13 +13,14 @@
 // visual work.
 //
 // Variants:
-//   - default: bg-elevated/60 + border, used for tiles and panels
-//   - strong:  bg-surface/80 + thicker border, used for the navbar / modals
+//   - default: bg-lair-700/60 + border, used for tiles and panels
+//   - strong:  bg-lair-800/80 + thicker border, used for the navbar / modals
 //
 // Usage:
-//   <GlassSurface variant="strong" className="rounded-xl p-6">...</GlassSurface>
+//   <GlassSurface variant="strong" className="rounded-lg p-6">...</GlassSurface>
 
 import { Platform, View, type ViewProps } from "react-native";
+import { alpha, palette } from "@/lib/tokens";
 
 interface GlassSurfaceProps extends ViewProps {
   variant?: "default" | "strong";
@@ -33,15 +34,15 @@ export function GlassSurface({
 }: GlassSurfaceProps) {
   // Translucent fill — alpha values chosen empirically so the radial body
   // gradient still shows through on web. On native the gradient isn't
-  // present, but the alpha-blended fill against the solid #0C0A14 background
+  // present, but the alpha-blended fill against the solid lair-900 background
   // still reads as a layered surface.
   const fill =
     variant === "strong"
-      ? "rgba(20, 17, 30, 0.78)" // surface @ 78%
-      : "rgba(29, 24, 43, 0.62)"; // elevated @ 62%
+      ? alpha(palette.lair800, 0.78) // lair-800 at 78%
+      : alpha(palette.lair700, 0.62); // lair-700 at 62%
 
   const borderColor =
-    variant === "strong" ? "rgba(45, 37, 64, 0.85)" : "rgba(45, 37, 64, 0.60)";
+    variant === "strong" ? alpha(palette.hairline, 0.85) : alpha(palette.hairline, 0.60);
 
   // Web gets a real backdrop-filter. Native and Android skip it.
   const webBlur =

@@ -25,6 +25,7 @@ import {
 } from "react-native";
 import Animated, { FadeIn, FadeOut, SlideInLeft, SlideOutLeft } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { alpha, palette, radii } from "@/lib/tokens";
 
 type IoniconName = ComponentProps<typeof Ionicons>["name"];
 
@@ -72,7 +73,7 @@ export function NavShell({ children }: { children: ReactNode }) {
   const closeAccount = () => setAccountOpen(false);
 
   return (
-    <View className="flex-1 bg-background">
+    <View className="flex-1 bg-lair-900">
       {isWide ? (
         <TopBar
           accountOpen={accountOpen}
@@ -173,12 +174,12 @@ function AccountMenuRow({
 }) {
   const router = useRouter();
   const isDanger = item.variant === "danger";
-  const colorClass = isDanger ? "text-danger" : "text-foreground";
+  const colorClass = isDanger ? "text-danger" : "text-bone";
   // hover: web mouse hover. active: native press / web mousedown.
   // Danger items use a red-tinted hover so the destructive action stays distinct.
   const interactiveClass = isDanger
     ? "hover:bg-danger/20 active:bg-danger/20"
-    : "hover:bg-border active:bg-border";
+    : "hover:bg-hairline active:bg-hairline";
 
   return (
     <Pressable
@@ -221,9 +222,9 @@ function TopBar({
       style={{
         zIndex: 100,
         position: "relative",
-        backgroundColor: "rgba(20, 17, 30, 0.82)",
+        backgroundColor: alpha(palette.lair800, 0.82),
         borderBottomWidth: 1,
-        borderBottomColor: "rgba(45, 37, 64, 0.85)",
+        borderBottomColor: alpha(palette.hairline, 0.85),
         ...(isWeb
           ? ({
               backdropFilter: "blur(16px)",
@@ -293,10 +294,10 @@ function NavLink({ item, active }: { item: NavItem; active: boolean }) {
   // Active items use a subtle primary tint + accent text + icon. Inactive
   // items get a hover/press surface so the nav feels reactive.
   const stateClass = active
-    ? "bg-primary/15"
-    : "hover:bg-elevated/60 active:bg-elevated/80";
-  const labelColor = active ? "text-accent" : "text-foreground";
-  const iconColor = active ? "#D4B25E" : "#A39F93";
+    ? "bg-soulfire/15"
+    : "hover:bg-lair-700/60 active:bg-lair-700/80";
+  const labelColor = active ? "text-hoard-gold" : "text-bone";
+  const iconColor = active ? palette.hoardGold : palette.boneDim;
 
   return (
     <Link href={item.href as any} asChild>
@@ -326,7 +327,7 @@ function TopBarAccountMenu({
   return (
     <View style={{ position: "relative" }}>
       <Pressable
-        className="flex-row items-center rounded-full p-1 hover:bg-elevated/60 active:bg-elevated/80"
+        className="flex-row items-center rounded-full p-1 hover:bg-lair-700/60 active:bg-lair-700/80"
         onPress={onToggle}
         accessibilityLabel={user ? `Account: ${user.username}` : "Account menu"}
         style={{ gap: 6 }}
@@ -337,14 +338,14 @@ function TopBarAccountMenu({
             style={{
               width: 32,
               height: 32,
-              borderRadius: 16,
+              borderRadius: radii.full,
               overflow: "hidden",
               alignItems: "center",
               justifyContent: "center",
             }}
           >
             <LinearGradient
-              colors={["#9B6BF2", "#D4B25E"]}
+              colors={[palette.soulfire, palette.hoardGold]}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 1 }}
               style={{ position: "absolute", inset: 0 }}
@@ -357,23 +358,23 @@ function TopBarAccountMenu({
           <Ionicons
             name="person-circle-outline"
             size={32}
-            color="#ECE9DF"
+            color={palette.bone}
           />
         )}
         {/* Chevron indicates the avatar opens a menu — v0's affordance. */}
         <Ionicons
           name={open ? "chevron-up" : "chevron-down"}
           size={14}
-          color="#A39F93"
+          color={palette.boneDim}
         />
       </Pressable>
 
       {open && (
         <View
-          className="absolute right-0 top-12 min-w-[200px] overflow-hidden rounded-xl border border-border py-1"
+          className="absolute right-0 top-12 min-w-[200px] overflow-hidden rounded-lg border border-hairline py-1"
           style={{
             zIndex: 50,
-            backgroundColor: "rgba(29, 24, 43, 0.92)",
+            backgroundColor: alpha(palette.lair700, 0.92),
             ...(isWeb
               ? ({
                   backdropFilter: "blur(12px)",
@@ -383,11 +384,11 @@ function TopBarAccountMenu({
           }}
         >
           {user && (
-            <View className="border-b border-border px-4 py-3">
-              <Text className="text-xs uppercase tracking-wider text-muted">
+            <View className="border-b border-hairline px-4 py-3">
+              <Text className="text-xs uppercase tracking-wider text-bone-dim">
                 Signed in as
               </Text>
-              <Text className="mt-0.5 font-semibold text-foreground">
+              <Text className="mt-0.5 font-semibold text-bone">
                 {user.username}
               </Text>
             </View>
@@ -434,9 +435,9 @@ function MobileHeader({
         paddingTop: insets.top + 6,
         zIndex: 100,
         position: "relative",
-        backgroundColor: "rgba(20, 17, 30, 0.85)",
+        backgroundColor: alpha(palette.lair800, 0.85),
         borderBottomWidth: 1,
-        borderBottomColor: "rgba(45, 37, 64, 0.85)",
+        borderBottomColor: alpha(palette.hairline, 0.85),
         ...(isWeb
           ? ({
               backdropFilter: "blur(14px)",
@@ -454,7 +455,7 @@ function MobileHeader({
         <Ionicons
           name={drawerOpen ? "close" : "menu"}
           size={28}
-          color="#ECE9DF"
+          color={palette.bone}
         />
       </Pressable>
 
@@ -497,7 +498,7 @@ function MobileDrawer({ onClose }: { onClose: () => void }) {
       <Animated.View
         entering={FadeIn.duration(200)}
         exiting={FadeOut.duration(200)}
-        className="absolute inset-0 bg-background/80"
+        className="absolute inset-0 bg-lair-900/80"
       >
         <Pressable className="absolute inset-0" onPress={onClose} />
       </Animated.View>
@@ -507,9 +508,9 @@ function MobileDrawer({ onClose }: { onClose: () => void }) {
       <Animated.View
         entering={SlideInLeft.duration(250)}
         exiting={SlideOutLeft.duration(200)}
-        className="absolute bottom-0 left-0 top-0 w-80 max-w-[85%] border-r border-border"
+        className="absolute bottom-0 left-0 top-0 w-80 max-w-[85%] border-r border-hairline"
         style={{
-          backgroundColor: "rgba(20, 17, 30, 0.95)",
+          backgroundColor: alpha(palette.lair800, 0.95),
           ...(isWeb
             ? ({
                 backdropFilter: "blur(16px)",
@@ -525,12 +526,12 @@ function MobileDrawer({ onClose }: { onClose: () => void }) {
           {ITEMS.map((item) => (
             <Link key={item.href} href={item.href as any} asChild>
               <Pressable
-                className="flex-row items-center border-b border-border py-4"
+                className="flex-row items-center border-b border-hairline py-4"
                 onPress={onClose}
                 style={{ gap: 14 }}
               >
-                <Ionicons name={item.icon} size={20} color="#D4B25E" />
-                <Text className="text-xl text-foreground">{item.label}</Text>
+                <Ionicons name={item.icon} size={20} color={palette.hoardGold} />
+                <Text className="text-xl text-bone">{item.label}</Text>
               </Pressable>
             </Link>
           ))}

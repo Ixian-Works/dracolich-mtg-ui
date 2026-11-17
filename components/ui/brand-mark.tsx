@@ -8,6 +8,7 @@
 
 import { LinearGradient } from "expo-linear-gradient";
 import { Platform, Text, View } from "react-native";
+import { alpha, palette } from "@/lib/tokens";
 
 interface BrandMarkProps {
   size?: number;
@@ -42,7 +43,7 @@ export function BrandMark({
           }}
         >
           <LinearGradient
-            colors={["#9B6BF2", "#D4B25E"]}
+            colors={[palette.soulfire, palette.hoardGold]}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 1 }}
             style={{ flex: 1 }}
@@ -53,7 +54,7 @@ export function BrandMark({
           style={{
             position: "absolute",
             inset: 0,
-            backgroundColor: "#0C0A14",
+            backgroundColor: palette.lair900,
             borderRadius: size * 0.22,
             margin: 2,
             alignItems: "center",
@@ -61,7 +62,7 @@ export function BrandMark({
           }}
         >
           <Text
-            className="font-brand font-bold text-primary"
+            className="font-brand font-bold text-soulfire"
             style={{ fontSize: size * 0.5, lineHeight: size * 0.6 }}
           >
             D
@@ -72,12 +73,12 @@ export function BrandMark({
         <Text
           className={
             wordmarkTone === "glow"
-              ? "font-brand text-xl text-primary"
-              : "font-brand text-xl text-foreground"
+              ? "font-brand text-xl text-soulfire"
+              : "font-brand text-xl text-bone"
           }
           style={
             wordmarkTone === "glow" && Platform.OS === "web"
-              ? ({ textShadow: "0 0 14px rgba(155, 107, 242, 0.55)" } as object)
+              ? ({ textShadow: `0 0 14px ${alpha(palette.soulfire, 0.55)}` } as object)
               : undefined
           }
         >

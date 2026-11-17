@@ -15,6 +15,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { Platform, Pressable, Text, View } from "react-native";
 
 import type { DeckCardDto, DeckDto } from "@/lib/queries/decks";
+import { alpha, palette, radii } from "@/lib/tokens";
 
 const CARD_ASPECT = 63 / 88;
 
@@ -42,13 +43,13 @@ export function DeckTile({ deck, onPress, width = 180 }: DeckTileProps) {
         width,
         // Mystical purple halo. Tinted to the accent color when the deck is
         // multi-color so the highlight matches the border.
-        shadowColor: accent === "#D4B25E" ? "#D4B25E" : "#9B6BF2",
+        shadowColor: accent === palette.hoardGold ? palette.hoardGold : palette.soulfire,
         shadowOffset: { width: 0, height: 0 },
         shadowOpacity: 0.3,
         shadowRadius: 14,
         ...(Platform.OS === "web"
           ? ({
-              boxShadow: `0 0 22px ${accent === "#D4B25E" ? "rgba(212, 178, 94, 0.30)" : "rgba(155, 107, 242, 0.30)"}`,
+              boxShadow: `0 0 22px ${accent === palette.hoardGold ? alpha(palette.hoardGold, 0.30) : alpha(palette.soulfire, 0.30)}`,
             } as object)
           : {}),
       }}
@@ -60,7 +61,7 @@ export function DeckTile({ deck, onPress, width = 180 }: DeckTileProps) {
           borderColor: accent,
           borderRadius: 16,
           overflow: "hidden",
-          backgroundColor: "#14111E",
+          backgroundColor: palette.lair800,
         }}
       >
         {cover ? (
@@ -73,8 +74,8 @@ export function DeckTile({ deck, onPress, width = 180 }: DeckTileProps) {
           />
         ) : (
           // No usable artwork — solid styled background with the format text.
-          <View className="flex-1 items-center justify-center bg-elevated p-3">
-            <Text className="text-center text-xs uppercase tracking-widest text-muted">
+          <View className="flex-1 items-center justify-center bg-lair-700 p-3">
+            <Text className="text-center text-xs uppercase tracking-widest text-bone-dim">
               {deck.format ?? "Deck"}
             </Text>
           </View>
@@ -85,7 +86,7 @@ export function DeckTile({ deck, onPress, width = 180 }: DeckTileProps) {
             covering more art than necessary. */}
         <LinearGradient
           pointerEvents="none"
-          colors={["rgba(12, 10, 20, 0)", "rgba(12, 10, 20, 0.92)"]}
+          colors={[alpha(palette.lair900, 0), alpha(palette.lair900, 0.92)]}
           locations={[0, 1]}
           style={{
             position: "absolute",
@@ -98,14 +99,14 @@ export function DeckTile({ deck, onPress, width = 180 }: DeckTileProps) {
           }}
         >
           <Text
-            className="font-brand text-foreground"
+            className="font-brand text-bone"
             numberOfLines={1}
             style={{ fontSize: 14, fontWeight: "700" }}
           >
             {deck.name}
           </Text>
           <View className="mt-1 flex-row items-center justify-between">
-            <Text className="text-[10px] uppercase tracking-wider text-accent">
+            <Text className="text-[10px] uppercase tracking-wider text-hoard-gold">
               {deck.format ?? ""}
             </Text>
             <ColorPips colors={resolvedColors} />
@@ -158,7 +159,7 @@ function pickFromImageMap(map?: Record<string, string>): string | undefined {
 function ColorPips({ colors }: { colors?: string[] }) {
   if (!colors || colors.length === 0) {
     return (
-      <Text className="text-[10px] text-muted">Colorless</Text>
+      <Text className="text-[10px] text-bone-dim">Colorless</Text>
     );
   }
   return (
@@ -169,10 +170,10 @@ function ColorPips({ colors }: { colors?: string[] }) {
           style={{
             width: 8,
             height: 8,
-            borderRadius: 4,
+            borderRadius: radii.full,
             backgroundColor: colorHex(c),
             borderWidth: 0.5,
-            borderColor: "rgba(0,0,0,0.4)",
+            borderColor: alpha(palette.black, 0.4),
           }}
         />
       ))}
@@ -183,24 +184,24 @@ function ColorPips({ colors }: { colors?: string[] }) {
 function colorHex(code: string): string {
   switch (code) {
     case "W":
-      return "#F8F6E8";
+      return palette.manaWhite;
     case "U":
-      return "#5C9EE5";
+      return palette.manaBlue;
     case "B":
-      return "#2D2A30";
+      return palette.manaBlack;
     case "R":
-      return "#D14B3D";
+      return palette.manaRed;
     case "G":
-      return "#5BA66B";
+      return palette.manaGreen;
     default:
-      return "#2A2A33";
+      return palette.hairline;
   }
 }
 
 // Aggregate accent: single color → that color; multi → gold; none → border.
 function aggregateColorAccent(colors?: string[]): string {
-  if (!colors || colors.length === 0) return "#2A2A33";
-  if (colors.length > 1) return "#D4B25E";
+  if (!colors || colors.length === 0) return palette.hairline;
+  if (colors.length > 1) return palette.hoardGold;
   return colorHex(colors[0]);
 }
 

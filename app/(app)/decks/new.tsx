@@ -38,6 +38,7 @@ import { FormField } from "@/components/form-field";
 import { PageContent } from "@/components/page-content";
 import { useSearchCards, type CardDto } from "@/lib/queries/cards";
 import { useCreateDeck, useImportDeck } from "@/lib/queries/decks";
+import { alpha, palette, radii } from "@/lib/tokens";
 
 // ---------- Format options ----------
 //
@@ -197,13 +198,13 @@ export default function NewDeckScreen() {
         <PageContent style={{ padding: 24 }}>
           <Pressable
             onPress={() => router.back()}
-            className="mb-3 self-start rounded-md px-2 py-1 hover:bg-elevated active:bg-elevated"
+            className="mb-3 self-start rounded-md px-2 py-1 hover:bg-lair-700 active:bg-lair-700"
           >
-            <Text className="text-sm text-accent">← Back</Text>
+            <Text className="text-sm text-hoard-gold">← Back</Text>
           </Pressable>
 
-          <Text className="font-brand text-3xl text-accent">New deck</Text>
-          <Text className="mt-1 mb-6 text-muted">
+          <Text className="font-brand text-3xl text-hoard-gold">New deck</Text>
+          <Text className="mt-1 mb-6 text-bone-dim">
             Pick a format and give it a name. You can paste a decklist now
             or start empty and add cards later.
           </Text>
@@ -224,7 +225,7 @@ export default function NewDeckScreen() {
                   onPress={() => setShowMoreFormats((o) => !o)}
                   className="mt-3 self-start"
                 >
-                  <Text className="text-xs text-accent">
+                  <Text className="text-xs text-hoard-gold">
                     {showMoreFormats ? "Show fewer" : "More formats →"}
                   </Text>
                 </Pressable>
@@ -288,22 +289,22 @@ export default function NewDeckScreen() {
           {/* ---------- Import (collapsible) ---------- */}
           <Pressable
             onPress={() => setShowImport((o) => !o)}
-            className="mt-2 flex-row items-center rounded-lg border border-border bg-elevated px-4 py-3 hover:bg-border/30 active:bg-border/30"
+            className="mt-2 flex-row items-center rounded-md border border-hairline bg-lair-700 px-4 py-3 hover:bg-hairline/30 active:bg-hairline/30"
           >
-            <Text className="flex-1 text-foreground">
+            <Text className="flex-1 text-bone">
               Import an existing decklist
             </Text>
-            <Text className="text-xs text-accent">
+            <Text className="text-xs text-hoard-gold">
               {showImport ? "Hide" : "Show"}
             </Text>
           </Pressable>
 
           {showImport && (
             <View className="mt-3">
-              <Text className="mb-2 text-xs text-muted">
+              <Text className="mb-2 text-xs text-bone-dim">
                 Paste a list in Moxfield / Scryfall format. Use{" "}
-                <Text className="text-foreground">// Sideboard</Text> /{" "}
-                <Text className="text-foreground">// Commander</Text>{" "}
+                <Text className="text-bone">// Sideboard</Text> /{" "}
+                <Text className="text-bone">// Commander</Text>{" "}
                 markers for sections. Lines that don&apos;t resolve to a
                 card will fail the whole import (strict mode).
               </Text>
@@ -335,7 +336,7 @@ export default function NewDeckScreen() {
 
           {/* ---------- Submit ---------- */}
           {submitError && (
-            <View className="mt-4 rounded-lg bg-danger/20 p-3">
+            <View className="mt-4 rounded-md bg-danger/20 p-3">
               <Text className="text-sm text-danger">{submitError}</Text>
             </View>
           )}
@@ -343,21 +344,21 @@ export default function NewDeckScreen() {
           <Pressable
             onPress={handleSubmit(onSubmit)}
             disabled={submitting || !canSubmit}
-            className={`mt-6 items-center rounded-lg py-3 ${
-              submitting || !canSubmit ? "bg-accent/40" : "bg-accent"
+            className={`mt-6 items-center rounded-md py-3 ${
+              submitting || !canSubmit ? "bg-hoard-gold/40" : "bg-hoard-gold"
             }`}
           >
             {submitting ? (
-              <ActivityIndicator color="#0F0F12" />
+              <ActivityIndicator color={palette.lair900} />
             ) : (
-              <Text className="font-semibold text-background">
+              <Text className="font-semibold text-lair-900">
                 {hasImportText ? "Import deck" : "Create deck"}
               </Text>
             )}
           </Pressable>
 
           {needsCommander && !commander && (
-            <Text className="mt-2 text-center text-xs text-muted">
+            <Text className="mt-2 text-center text-xs text-bone-dim">
               Pick a commander above to enable creation.
             </Text>
           )}
@@ -397,27 +398,27 @@ function CommanderPicker({
       <View>
         <SectionHeader title="Commander" required />
         <View
-          className="flex-row items-center rounded-lg border border-accent/40 bg-accent/5 p-3"
+          className="flex-row items-center rounded-md border border-hoard-gold/40 bg-hoard-gold/5 p-3"
           style={{ gap: 12 }}
         >
           <CardTile card={selected} mode="carousel" width={88} />
           <View style={{ flex: 1 }}>
             <Text
-              className="font-semibold text-foreground"
+              className="font-semibold text-bone"
               numberOfLines={1}
             >
               {selected.name}
             </Text>
             {selected.default_face?.full_type && (
-              <Text className="mt-0.5 text-xs text-muted" numberOfLines={1}>
+              <Text className="mt-0.5 text-xs text-bone-dim" numberOfLines={1}>
                 {selected.default_face.full_type}
               </Text>
             )}
             <Pressable
               onPress={onClear}
-              className="mt-2 self-start rounded-md border border-border px-3 py-1 hover:bg-elevated active:bg-elevated"
+              className="mt-2 self-start rounded-md border border-hairline px-3 py-1 hover:bg-lair-700 active:bg-lair-700"
             >
-              <Text className="text-xs text-accent">Change</Text>
+              <Text className="text-xs text-hoard-gold">Change</Text>
             </Pressable>
           </View>
         </View>
@@ -429,32 +430,32 @@ function CommanderPicker({
   return (
     <View>
       <SectionHeader title="Commander" required />
-      <Text className="mb-3 text-xs text-muted">
+      <Text className="mb-3 text-xs text-bone-dim">
         Pick a legendary creature (or any &quot;can be your commander&quot;
         card) to lead the deck.
       </Text>
 
       <View
-        className="flex-row items-center rounded-full border border-border bg-elevated"
+        className="flex-row items-center rounded-full border border-hairline bg-lair-700"
         style={{ paddingHorizontal: 14, height: 44 }}
       >
         <Ionicons
           name="search"
           size={18}
-          color={query ? "#D4B25E" : "#9A9AA8"}
+          color={query ? palette.hoardGold : palette.boneDim}
         />
         <TextInput
           value={query}
           onChangeText={setQuery}
           placeholder="Search for your commander…"
-          placeholderTextColor="#9A9AA8"
+          placeholderTextColor={palette.boneDim}
           autoCapitalize="none"
           autoCorrect={false}
           returnKeyType="search"
           style={{
             flex: 1,
             marginLeft: 10,
-            color: "#E8E6E3",
+            color: palette.bone,
             fontSize: 15,
             paddingVertical: 0,
             ...(Platform.OS === "web"
@@ -464,20 +465,20 @@ function CommanderPicker({
         />
         {query.length > 0 && (
           <Pressable onPress={() => setQuery("")}>
-            <Ionicons name="close-circle" size={18} color="#9A9AA8" />
+            <Ionicons name="close-circle" size={18} color={palette.boneDim} />
           </Pressable>
         )}
       </View>
 
       {search.isLoading && (
         <View className="mt-3 items-center py-4">
-          <ActivityIndicator size="small" color="#D4B25E" />
+          <ActivityIndicator size="small" color={palette.hoardGold} />
         </View>
       )}
 
       {!search.isLoading && query.length > 0 && cards.length === 0 && (
-        <View className="mt-3 rounded-lg border border-border bg-elevated p-3">
-          <Text className="text-sm text-muted">No cards matched.</Text>
+        <View className="mt-3 rounded-md border border-hairline bg-lair-700 p-3">
+          <Text className="text-sm text-bone-dim">No cards matched.</Text>
         </View>
       )}
 
@@ -507,13 +508,13 @@ function CommanderPicker({
                     right: 6,
                     width: 26,
                     height: 26,
-                    borderRadius: 13,
-                    backgroundColor: "rgba(212,178,94,0.95)",
+                    borderRadius: radii.full,
+                    backgroundColor: alpha(palette.hoardGold, 0.95),
                     alignItems: "center",
                     justifyContent: "center",
                   }}
                 >
-                  <Ionicons name="ribbon" size={14} color="#0F0F12" />
+                  <Ionicons name="ribbon" size={14} color={palette.lair900} />
                 </View>
               </View>
             </View>
@@ -535,7 +536,7 @@ function SectionHeader({
 }) {
   return (
     <View className="mb-3 flex-row items-baseline" style={{ gap: 6 }}>
-      <Text className="text-xs uppercase tracking-wider text-muted">
+      <Text className="text-xs uppercase tracking-wider text-bone-dim">
         {title}
       </Text>
       {required && <Text className="text-xs text-danger">*</Text>}

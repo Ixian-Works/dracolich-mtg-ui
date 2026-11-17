@@ -3,6 +3,11 @@
 @tailwind utilities;
 
 /* ----------------------------------------------------------------------- */
+/* Colours here come from lib/tokens.js through Tailwind's theme() function, */
+/* so this file holds no colour of its own.                                  */
+/* ----------------------------------------------------------------------- */
+
+/* ----------------------------------------------------------------------- */
 /* Mystical background gradient — web only.                                 */
 /* RN can't render radial-gradient natively, so the body styling here only  */
 /* affects RN-Web. Native uses a plain background color set in              */
@@ -10,20 +15,20 @@
 /* ----------------------------------------------------------------------- */
 html,
 body {
-  background-color: #0c0a14;
+  background-color: theme("colors.lair-900");
   background-image:
     radial-gradient(
       ellipse at top,
-      rgba(75, 50, 130, 0.28),
+      theme("legacy.pageGlowViolet / 28%"),
       transparent 55%
     ),
     radial-gradient(
       ellipse at bottom right,
-      rgba(40, 60, 130, 0.22),
+      theme("legacy.pageGlowBlue / 22%"),
       transparent 55%
     );
   background-attachment: fixed;
-  color: #ece9df;
+  color: theme("colors.bone");
   /* Cinzel everywhere — matches the v0 design exploration. Loaded font
      names from @expo-google-fonts/cinzel resolve first; serif is the
      pre-load fallback so headings don't pop in. */
@@ -53,7 +58,7 @@ img {
 /* ----------------------------------------------------------------------- */
 * {
   scrollbar-width: thin;
-  scrollbar-color: #2d2540 transparent;
+  scrollbar-color: theme("colors.hairline") transparent;
 }
 
 *::-webkit-scrollbar {
@@ -66,10 +71,10 @@ img {
 }
 
 *::-webkit-scrollbar-thumb {
-  background: #2d2540;
+  background: theme("colors.hairline");
   border-radius: 4px;
 }
 
 *::-webkit-scrollbar-thumb:hover {
-  background: #6f4dae;
+  background: theme("colors.soulfire-dim");
 }

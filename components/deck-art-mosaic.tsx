@@ -24,6 +24,7 @@ import Animated, {
 
 import { ManaCost } from "@/components/mana-cost";
 import type { DeckCardDto } from "@/lib/queries/decks";
+import { alpha, palette, radii } from "@/lib/tokens";
 
 interface DeckArtMosaicProps {
   cards: DeckCardDto[];
@@ -82,6 +83,8 @@ interface ArtTileProps {
 }
 
 const MAX_TILT_DEG = 8;
+// Read once here so the tilt worklet captures a string, not the whole palette.
+const LIFT_GLOW = palette.hoardGold;
 const ENTER_SPRING = { damping: 18, stiffness: 220 };
 const LEAVE_SPRING = { damping: 14, stiffness: 180 };
 
@@ -145,7 +148,7 @@ function ArtTile({ card, width, onPress }: ArtTileProps) {
         { rotateX: `${rotateX}deg` },
         { rotateY: `${rotateY}deg` },
       ],
-      shadowColor: "#D4B25E",
+      shadowColor: LIFT_GLOW,
       shadowOpacity: lift.value * 0.55,
       shadowRadius: lift.value * 18,
       shadowOffset: { width: 0, height: 0 },
@@ -179,7 +182,7 @@ function ArtTile({ card, width, onPress }: ArtTileProps) {
           overflow: "hidden",
           borderWidth: 1.5,
           borderColor: accent,
-          backgroundColor: "#1C1C24",
+          backgroundColor: palette.lair700,
         }}
       >
         {art ? (
@@ -201,18 +204,18 @@ function ArtTile({ card, width, onPress }: ArtTileProps) {
             bottom: 0,
             paddingHorizontal: 8,
             paddingVertical: 6,
-            backgroundColor: "rgba(15,15,18,0.82)",
+            backgroundColor: alpha(palette.lair900, 0.82),
           }}
         >
           <Text
-            className="font-semibold text-foreground"
+            className="font-semibold text-bone"
             numberOfLines={1}
             style={{ fontSize: 12 }}
           >
             {card.name}
           </Text>
           <View className="mt-0.5 flex-row items-center justify-between">
-            <Text className="text-[10px] uppercase tracking-wider text-muted">
+            <Text className="text-[10px] uppercase tracking-wider text-bone-dim">
               {(card.count ?? 1) > 1 ? `×${card.count}` : ""}
             </Text>
             {card.mana_cost && <ManaCost cost={card.mana_cost} size={10} />}
@@ -231,8 +234,8 @@ function ArtTile({ card, width, onPress }: ArtTileProps) {
               minWidth: 22,
               paddingHorizontal: 6,
               paddingVertical: 1,
-              borderRadius: 11,
-              backgroundColor: "rgba(212, 178, 94, 0.95)",
+              borderRadius: radii.full,
+              backgroundColor: alpha(palette.hoardGold, 0.95),
               alignItems: "center",
               justifyContent: "center",
             }}
@@ -241,7 +244,7 @@ function ArtTile({ card, width, onPress }: ArtTileProps) {
               style={{
                 fontSize: 10,
                 fontWeight: "700",
-                color: "#0F0F12",
+                color: palette.lair900,
               }}
             >
               ×{card.count}
@@ -254,20 +257,20 @@ function ArtTile({ card, width, onPress }: ArtTileProps) {
 }
 
 function aggregateColorAccent(colors?: string[]): string {
-  if (!colors || colors.length === 0) return "#2A2A33";
-  if (colors.length > 1) return "#D4B25E";
+  if (!colors || colors.length === 0) return palette.hairline;
+  if (colors.length > 1) return palette.hoardGold;
   switch (colors[0]) {
     case "W":
-      return "#F8F6E8";
+      return palette.manaWhite;
     case "U":
-      return "#5C9EE5";
+      return palette.manaBlue;
     case "B":
-      return "#2D2A30";
+      return palette.manaBlack;
     case "R":
-      return "#D14B3D";
+      return palette.manaRed;
     case "G":
-      return "#5BA66B";
+      return palette.manaGreen;
     default:
-      return "#2A2A33";
+      return palette.hairline;
   }
 }

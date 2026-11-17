@@ -3,6 +3,7 @@
 
 import { Control, Controller, FieldValues, Path } from "react-hook-form";
 import { Text, TextInput, TextInputProps, View } from "react-native";
+import { palette } from "@/lib/tokens";
 
 interface FormFieldProps<T extends FieldValues>
   extends Omit<TextInputProps, "value" | "onChangeText"> {
@@ -21,7 +22,7 @@ export function FormField<T extends FieldValues>({
 }: FormFieldProps<T>) {
   return (
     <View className="mb-4">
-      <Text className="mb-1 text-sm text-foreground">{label}</Text>
+      <Text className="mb-1 text-sm text-bone">{label}</Text>
       <Controller
         control={control}
         name={name}
@@ -30,9 +31,9 @@ export function FormField<T extends FieldValues>({
             value={value ?? ""}
             onChangeText={onChange}
             onBlur={onBlur}
-            placeholderTextColor="#6B6B78"
-            className={`rounded-lg border bg-elevated px-4 py-3 text-foreground ${
-              error ? "border-danger" : "border-border"
+            placeholderTextColor={palette.boneFaint}
+            className={`rounded-md border bg-lair-700 px-4 py-3 text-bone ${
+              error ? "border-danger" : "border-hairline"
             }`}
             {...rest}
           />

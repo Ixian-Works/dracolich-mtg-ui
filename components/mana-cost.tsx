@@ -41,7 +41,7 @@ function ManaSymbol({ symbol, size }: { symbol: string; size: number }) {
     // Loading or error → keep the raw token so the cost stays readable
     return (
       <Text
-        className="text-muted"
+        className="text-bone-dim"
         style={{ fontSize: size, lineHeight: size * 1.2 }}
       >
         {symbol}

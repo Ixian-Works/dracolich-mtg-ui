@@ -27,6 +27,7 @@ import { FeedbackProvider } from "@/components/feedback-provider";
 import { HoverPreviewProvider } from "@/components/hover-preview";
 import { AuthProvider } from "@/lib/auth";
 import { QueryProvider } from "@/lib/query-client";
+import { palette } from "@/lib/tokens";
 
 // Make Cinzel the default font for every <Text> across the app, matching
 // the v0 design exploration. NativeWind's tailwind.config maps font-sans →
@@ -81,7 +82,7 @@ export default function RootLayout() {
                   <Stack
                     screenOptions={{
                       headerShown: false,
-                      contentStyle: { backgroundColor: "#0C0A14" },
+                      contentStyle: { backgroundColor: palette.lair900 },
                     }}
                   >
                     <Stack.Screen name="(app)" />

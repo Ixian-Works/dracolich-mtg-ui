@@ -14,6 +14,7 @@ import { Pressable, Text, View } from "react-native";
 
 import { useHoverPreviewWithCleanup } from "@/components/hover-preview";
 import type { DeckCardDto, DeckDto } from "@/lib/queries/decks";
+import { alpha, palette } from "@/lib/tokens";
 
 // Standard MTG card aspect (63mm × 88mm).
 const CARD_ASPECT = 63 / 88;
@@ -288,12 +289,12 @@ function TypePile({
           style={{ gap: 6, flex: 1 }}
         >
           <Text
-            className="font-brand text-base text-accent"
+            className="font-brand text-base text-hoard-gold"
             numberOfLines={1}
           >
             {pluralize(type, total)}
           </Text>
-          <Text className="text-xs text-muted">{total}</Text>
+          <Text className="text-xs text-bone-dim">{total}</Text>
         </View>
         {onEdit && (
           // Pill-style Edit button — icon + label, gold-tinted background,
@@ -302,11 +303,11 @@ function TypePile({
           <Pressable
             onPress={onEdit}
             accessibilityLabel={`Edit ${pluralize(type, total)} pile`}
-            className="flex-row items-center rounded-full border border-accent/40 px-3 py-1.5 hover:bg-accent/15 active:bg-accent/25"
-            style={{ gap: 6, backgroundColor: "rgba(212, 178, 94, 0.08)" }}
+            className="flex-row items-center rounded-full border border-hoard-gold/40 px-3 py-1.5 hover:bg-hoard-gold/15 active:bg-hoard-gold/25"
+            style={{ gap: 6, backgroundColor: alpha(palette.hoardGold, 0.08) }}
           >
-            <Ionicons name="create-outline" size={14} color="#D4B25E" />
-            <Text className="text-xs font-semibold text-accent">Edit</Text>
+            <Ionicons name="create-outline" size={14} color={palette.hoardGold} />
+            <Text className="text-xs font-semibold text-hoard-gold">Edit</Text>
           </Pressable>
         )}
       </View>
@@ -392,7 +393,7 @@ function PileCard({
         overflow: "hidden",
         borderWidth: 1,
         borderColor: accent,
-        backgroundColor: "#1C1C24",
+        backgroundColor: palette.lair700,
       }}
     >
       {imageUri ? (
@@ -406,7 +407,7 @@ function PileCard({
       ) : (
         <View className="flex-1 items-center justify-center p-2">
           <Text
-            className="text-center text-[10px] text-foreground"
+            className="text-center text-[10px] text-bone"
             numberOfLines={2}
           >
             {card.name}
@@ -432,20 +433,20 @@ function SectionLabel({
       style={{ gap: 8 }}
     >
       <View className="flex-row items-baseline" style={{ gap: 8 }}>
-        <Text className="text-[11px] uppercase tracking-wider text-muted">
+        <Text className="text-[11px] uppercase tracking-wider text-bone-dim">
           {text}
         </Text>
-        <Text className="text-[11px] text-accent">{count}</Text>
+        <Text className="text-[11px] text-hoard-gold">{count}</Text>
       </View>
       {onEdit && (
         <Pressable
           onPress={onEdit}
           accessibilityLabel={`Edit ${text}`}
-          className="flex-row items-center rounded-full px-2 py-1 hover:bg-elevated active:bg-elevated/80"
+          className="flex-row items-center rounded-full px-2 py-1 hover:bg-lair-700 active:bg-lair-700/80"
           style={{ gap: 4 }}
         >
-          <Ionicons name="create-outline" size={12} color="#D4B25E" />
-          <Text className="text-[10px] uppercase tracking-wider text-accent">
+          <Ionicons name="create-outline" size={12} color={palette.hoardGold} />
+          <Text className="text-[10px] uppercase tracking-wider text-hoard-gold">
             Edit
           </Text>
         </Pressable>
@@ -499,20 +500,20 @@ function pluralize(type: string, count: number): string {
 }
 
 function colorIdentityAccent(colors?: string[]): string {
-  if (!colors || colors.length === 0) return "#2A2A33";
-  if (colors.length > 1) return "#D4B25E";
+  if (!colors || colors.length === 0) return palette.hairline;
+  if (colors.length > 1) return palette.hoardGold;
   switch (colors[0]) {
     case "W":
-      return "#F8F6E8";
+      return palette.manaWhite;
     case "U":
-      return "#5C9EE5";
+      return palette.manaBlue;
     case "B":
-      return "#2D2A30";
+      return palette.manaBlack;
     case "R":
-      return "#D14B3D";
+      return palette.manaRed;
     case "G":
-      return "#5BA66B";
+      return palette.manaGreen;
     default:
-      return "#2A2A33";
+      return palette.hairline;
   }
 }

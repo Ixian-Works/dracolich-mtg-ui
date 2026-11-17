@@ -43,6 +43,7 @@ import {
   usePopularDecks,
   type DeckDto,
 } from "@/lib/queries/decks";
+import { alpha, palette } from "@/lib/tokens";
 
 const DECK_TILE_WIDTH = 180;
 const WIDE_BREAKPOINT = 1024;
@@ -72,7 +73,7 @@ export default function Dashboard() {
         <View className="pt-8" style={{ gap: 12 }}>
           {/* {!isTablet && <BrandMark size={56} />} */}
           <Hero username={user?.username} viewportWidth={width} />
-          <Text className="text-muted" style={{ fontSize: 15 }}>
+          <Text className="text-bone-dim" style={{ fontSize: 15 }}>
             {user
               ? "What are we building today?"
               : "Build, analyze, and refine your Magic: The Gathering decks with AI assistance."}
@@ -120,7 +121,7 @@ export default function Dashboard() {
             {user && (
               <Section
                 icon="time-outline"
-                iconColor="#9B6BF2"
+                iconColor={palette.soulfire}
                 title="Your recent decks"
                 href="/account/decks"
                 linkLabel="See all"
@@ -135,7 +136,7 @@ export default function Dashboard() {
             )}
             <Section
               icon="trending-up"
-              iconColor="#D4B25E"
+              iconColor={palette.hoardGold}
               title="Popular decks"
               href="/decks"
               linkLabel="Explore"
@@ -207,20 +208,20 @@ function Hero({
 
   const glow =
     Platform.OS === "web"
-      ? ({ textShadow: "0 0 24px rgba(155, 107, 242, 0.55)" } as object)
+      ? ({ textShadow: `0 0 24px ${alpha(palette.soulfire, 0.55)}` } as object)
       : null;
 
   if (username) {
     return (
       <View className="flex-row flex-wrap items-baseline" style={{ gap: 12 }}>
         <Text
-          className="font-brand text-primary"
+          className="font-brand text-soulfire"
           style={{ fontSize: signedInFontSize, fontWeight: "700", ...glow }}
         >
           Welcome,
         </Text>
         <Text
-          className="font-brand text-accent"
+          className="font-brand text-hoard-gold"
           style={{ fontSize: signedInFontSize, fontWeight: "700" }}
         >
           {username}
@@ -230,7 +231,7 @@ function Hero({
   }
   return (
     <Text
-      className="font-brand text-primary"
+      className="font-brand text-soulfire"
       numberOfLines={1}
       adjustsFontSizeToFit
       style={{ fontSize: anonFontSize, fontWeight: "700", ...glow }}
@@ -263,27 +264,27 @@ function QuickActionCard({
   // Per-platform glow on the AI / glow tile so it reads as "special".
   const glowStyle = isGlow
     ? {
-        shadowColor: "#D4B25E",
+        shadowColor: palette.hoardGold,
         shadowOffset: { width: 0, height: 0 },
         shadowOpacity: 0.35,
         shadowRadius: 16,
         ...(Platform.OS === "web"
-          ? ({ boxShadow: "0 0 24px rgba(212, 178, 94, 0.35)" } as object)
+          ? ({ boxShadow: `0 0 24px ${alpha(palette.hoardGold, 0.35)}` } as object)
           : {}),
       }
     : {};
 
   const bgClass = isPrimary
-    ? "bg-primary"
-    : "bg-elevated/60 border border-border";
-  const titleColor = isPrimary ? "text-white" : "text-foreground";
-  const descColor = isPrimary ? "text-white/80" : "text-muted";
-  const iconColor = isPrimary ? "#FFFFFF" : isGlow ? "#D4B25E" : "#9B6BF2";
+    ? "bg-soulfire"
+    : "bg-lair-700/60 border border-hairline";
+  const titleColor = isPrimary ? "text-white" : "text-bone";
+  const descColor = isPrimary ? "text-white/80" : "text-bone-dim";
+  const iconColor = isPrimary ? palette.white : isGlow ? palette.hoardGold : palette.soulfire;
 
   return (
     <Link href={href as any} asChild>
       <Pressable
-        className={`flex-row items-center rounded-xl p-4 ${bgClass}`}
+        className={`flex-row items-center rounded-lg p-4 ${bgClass}`}
         // Flat single style object — expo-router <Link asChild> forwards the
         // child style through and React DOM rejects style arrays as
         // CSSStyleDeclaration indices.
@@ -295,8 +296,8 @@ function QuickActionCard({
         }}
       >
         <View
-          className={`items-center justify-center rounded-lg ${
-            isPrimary ? "bg-white/20" : "bg-primary/15"
+          className={`items-center justify-center rounded-md ${
+            isPrimary ? "bg-white/20" : "bg-soulfire/15"
           }`}
           style={{ width: 44, height: 44 }}
         >
@@ -348,7 +349,7 @@ function Section({
         <View className="flex-row items-center" style={{ gap: 10 }}>
           <Ionicons name={icon} size={20} color={iconColor} />
           <Text
-            className="font-brand text-foreground"
+            className="font-brand text-bone"
             style={{ fontSize: 20, fontWeight: "600" }}
           >
             {title}
@@ -360,10 +361,10 @@ function Section({
             className="flex-row items-center"
             style={{ gap: 4 }}
           >
-            <Text className="text-sm text-muted hover:text-primary">
+            <Text className="text-sm text-bone-dim hover:text-soulfire">
               {linkLabel}
             </Text>
-            <Ionicons name="arrow-forward" size={14} color="#A39F93" />
+            <Ionicons name="arrow-forward" size={14} color={palette.boneDim} />
           </Pressable>
         )}
       </View>
@@ -398,14 +399,14 @@ function DeckGrid({
   if (loading) {
     return (
       <View className="items-center py-10">
-        <ActivityIndicator color="#9B6BF2" />
+        <ActivityIndicator color={palette.soulfire} />
       </View>
     );
   }
   if (decks.length === 0) {
     return (
-      <View className="items-center justify-center rounded-xl border border-dashed border-border py-10">
-        <Text className="text-sm text-muted" style={{ textAlign: "center", paddingHorizontal: 16 }}>
+      <View className="items-center justify-center rounded-lg border border-dashed border-hairline py-10">
+        <Text className="text-sm text-bone-dim" style={{ textAlign: "center", paddingHorizontal: 16 }}>
           {emptyHint}
         </Text>
       </View>
@@ -442,9 +443,9 @@ function CardOfTheDay({
   const isMythic = rarity === "mythic" || rarity === "mythic rare";
 
   return (
-    <View className="rounded-xl border border-border p-5"
+    <View className="rounded-lg border border-hairline p-5"
       style={{
-        backgroundColor: "rgba(29, 24, 43, 0.62)",
+        backgroundColor: alpha(palette.lair700, 0.62),
         ...(Platform.OS === "web"
           ? ({
               backdropFilter: "blur(12px)",
@@ -454,9 +455,9 @@ function CardOfTheDay({
       }}
     >
       <View className="mb-3 flex-row items-center" style={{ gap: 8 }}>
-        <Ionicons name="sparkles" size={18} color="#D4B25E" />
+        <Ionicons name="sparkles" size={18} color={palette.hoardGold} />
         <Text
-          className="font-brand text-foreground"
+          className="font-brand text-bone"
           style={{ fontSize: 16, fontWeight: "600" }}
         >
           Card of the day
@@ -466,9 +467,9 @@ function CardOfTheDay({
       {loading || !card ? (
         <View className="items-center justify-center py-12">
           {loading ? (
-            <ActivityIndicator color="#D4B25E" />
+            <ActivityIndicator color={palette.hoardGold} />
           ) : (
-            <Text className="text-sm text-muted">No featured card yet.</Text>
+            <Text className="text-sm text-bone-dim">No featured card yet.</Text>
           )}
         </View>
       ) : (
@@ -481,17 +482,17 @@ function CardOfTheDay({
                 borderRadius: 12,
                 overflow: "hidden",
                 borderWidth: 2,
-                borderColor: isMythic ? "#F97316" : "#D4B25E",
-                shadowColor: isMythic ? "#F97316" : "#D4B25E",
+                borderColor: isMythic ? palette.rarityMythic : palette.hoardGold,
+                shadowColor: isMythic ? palette.rarityMythic : palette.hoardGold,
                 shadowOffset: { width: 0, height: 0 },
                 shadowOpacity: 0.4,
                 shadowRadius: 18,
-                backgroundColor: "#14111E",
+                backgroundColor: palette.lair800,
                 ...(Platform.OS === "web"
                   ? ({
                       boxShadow: isMythic
-                        ? "0 0 28px rgba(249, 115, 22, 0.45)"
-                        : "0 0 28px rgba(212, 178, 94, 0.4)",
+                        ? `0 0 28px ${alpha(palette.rarityMythic, 0.45)}`
+                        : `0 0 28px ${alpha(palette.hoardGold, 0.4)}`,
                     } as object)
                   : {}),
               }}
@@ -506,28 +507,28 @@ function CardOfTheDay({
                 />
               ) : (
                 <View className="flex-1 items-center justify-center p-4">
-                  <Text className="text-center font-brand text-foreground">
+                  <Text className="text-center font-brand text-bone">
                     {card.name}
                   </Text>
                 </View>
               )}
             </View>
             <Text
-              className="mt-4 text-center font-brand text-foreground"
+              className="mt-4 text-center font-brand text-bone"
               style={{ fontSize: 16, fontWeight: "600" }}
               numberOfLines={1}
             >
               {card.name}
             </Text>
             {card.default_face?.full_type && (
-              <Text className="text-center text-xs text-muted" numberOfLines={1}>
+              <Text className="text-center text-xs text-bone-dim" numberOfLines={1}>
                 {card.default_face.full_type}
               </Text>
             )}
             {rarity && (
               <Text
                 className="mt-1 text-center text-xs uppercase tracking-wider"
-                style={{ color: isMythic ? "#F97316" : "#D4B25E" }}
+                style={{ color: isMythic ? palette.rarityMythic : palette.hoardGold }}
               >
                 {rarity}
               </Text>
@@ -552,9 +553,9 @@ function StatsPanel({
 }) {
   return (
     <View
-      className="rounded-xl border border-border p-5"
+      className="rounded-lg border border-hairline p-5"
       style={{
-        backgroundColor: "rgba(29, 24, 43, 0.62)",
+        backgroundColor: alpha(palette.lair700, 0.62),
         ...(Platform.OS === "web"
           ? ({
               backdropFilter: "blur(12px)",
@@ -564,7 +565,7 @@ function StatsPanel({
       }}
     >
       <Text
-        className="mb-4 font-brand text-foreground"
+        className="mb-4 font-brand text-bone"
         style={{ fontSize: 16, fontWeight: "600" }}
       >
         Your stats
@@ -577,7 +578,7 @@ function StatsPanel({
       {/* Decorative gradient sliver under the stats — purely visual flourish
           that lifts the panel without competing with the numbers. */}
       <LinearGradient
-        colors={["transparent", "rgba(155, 107, 242, 0.35)", "transparent"]}
+        colors={["transparent", alpha(palette.soulfire, 0.35), "transparent"]}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 0 }}
         style={{ height: 1, marginTop: 18 }}
@@ -596,12 +597,12 @@ function Stat({ label, value }: { label: string; value: number }) {
       }}
     >
       <Text
-        className="font-brand text-primary"
+        className="font-brand text-soulfire"
         style={{ fontSize: 22, fontWeight: "700" }}
       >
         {value}
       </Text>
-      <Text className="text-xs uppercase tracking-wider text-muted">
+      <Text className="text-xs uppercase tracking-wider text-bone-dim">
         {label}
       </Text>
     </View>

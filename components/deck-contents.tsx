@@ -15,6 +15,7 @@ import { CardTile } from "@/components/card-tile";
 import { DeckArtMosaic } from "@/components/deck-art-mosaic";
 import type { CardDto } from "@/lib/queries/cards";
 import type { DeckCardDto, DeckDto } from "@/lib/queries/decks";
+import { palette, radii } from "@/lib/tokens";
 
 interface DeckContentsProps {
   deck: DeckDto;
@@ -159,10 +160,10 @@ function TypeBlock({
         className="mb-3 flex-row items-baseline"
         style={{ gap: 8 }}
       >
-        <Text className="font-brand text-xl text-accent">
+        <Text className="font-brand text-xl text-hoard-gold">
           {pluralize(type, count)}
         </Text>
-        <Text className="text-sm text-muted">{count}</Text>
+        <Text className="text-sm text-bone-dim">{count}</Text>
       </View>
       <DeckArtMosaic
         cards={cards}
@@ -180,9 +181,9 @@ function SectionTitle({ text, count }: { text: string; count?: number }) {
         className="flex-row items-baseline"
         style={{ gap: 10 }}
       >
-        <Text className="font-brand text-2xl text-foreground">{text}</Text>
+        <Text className="font-brand text-2xl text-bone">{text}</Text>
         {count != null && (
-          <Text className="font-brand text-base text-accent">{count}</Text>
+          <Text className="font-brand text-base text-hoard-gold">{count}</Text>
         )}
       </View>
       {/* Thin gold accent rule under the section title — gives the page
@@ -192,8 +193,8 @@ function SectionTitle({ text, count }: { text: string; count?: number }) {
         style={{
           height: 2,
           width: 36,
-          backgroundColor: "#D4B25E",
-          borderRadius: 1,
+          backgroundColor: palette.hoardGold,
+          borderRadius: radii.full,
         }}
       />
     </View>

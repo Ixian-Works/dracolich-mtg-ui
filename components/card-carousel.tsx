@@ -36,6 +36,7 @@ import { CardBack } from "@/components/card-back";
 import { CardTile } from "@/components/card-tile";
 import { CarouselIndicator } from "@/components/carousel-indicator";
 import type { CardDto } from "@/lib/queries/cards";
+import { palette } from "@/lib/tokens";
 
 // "Deck-flip" mode: cards on this side of the active are face-down. As they
 // cross the active position they flip face-up. "none" (default) = all face-up.
@@ -79,7 +80,7 @@ const PARALLAX_TILT = 14;
 
 // Active-card gold glow — soft halo via shadow. iOS/web only; Android can't
 // color shadows, so it's a no-op there.
-const GLOW_COLOR = "#D4B25E";
+const GLOW_COLOR = palette.hoardGold;
 const GLOW_MAX_OPACITY = 0.3;
 const GLOW_MAX_RADIUS = 28;
 
@@ -88,7 +89,7 @@ const GLOW_MAX_RADIUS = 28;
 // distance from center.
 const SHADOW_OVERLAY_MAX_OPACITY = 0.25;
 
-// Card radius — must match CardTile's rounded-2xl (16px) so the overlay
+// Card radius — must match CardTile's 16px corners so the overlay
 // clips to the card's silhouette.
 const CARD_RADIUS = 10;
 
@@ -513,7 +514,7 @@ function CardInStack({
         pointerEvents="none"
         style={[
           StyleSheet.absoluteFillObject,
-          { backgroundColor: "#000", borderRadius: CARD_RADIUS },
+          { backgroundColor: palette.black, borderRadius: CARD_RADIUS },
           overlayStyle,
         ]}
       />

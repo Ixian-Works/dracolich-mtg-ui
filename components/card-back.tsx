@@ -2,6 +2,7 @@
 // Swap to a real asset (image / SVG) when one is available.
 
 import { Text, View } from "react-native";
+import { legacy, palette } from "@/lib/tokens";
 
 const CARD_ASPECT = 63 / 88;
 
@@ -21,15 +22,15 @@ export function CardBack({ width }: { width: number }) {
           alignItems: "center",
           justifyContent: "center",
           borderWidth: 2,
-          borderColor: "#000",
+          borderColor: palette.black,
           borderRadius: 16,
-          backgroundColor: "#2A1810",
+          backgroundColor: legacy.cardBackBrown,
           padding: 16,
         }}
       >
         <Text
           style={{
-            color: "#D4B25E",
+            color: palette.hoardGold,
             fontSize: 22,
             fontWeight: "900",
             textAlign: "center",
@@ -40,7 +41,7 @@ export function CardBack({ width }: { width: number }) {
         </Text>
         <Text
           style={{
-            color: "#D4B25E",
+            color: palette.hoardGold,
             fontSize: 9,
             textAlign: "center",
             letterSpacing: 2,
@@ -55,7 +56,7 @@ export function CardBack({ width }: { width: number }) {
             marginTop: 16,
             width: 50,
             height: 1,
-            backgroundColor: "#D4B25E",
+            backgroundColor: palette.hoardGold,
             opacity: 0.4,
           }}
         />

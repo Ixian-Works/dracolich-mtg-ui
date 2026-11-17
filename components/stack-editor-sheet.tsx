@@ -53,6 +53,7 @@ import {
 
 import { ManaCost } from "@/components/mana-cost";
 import type { DeckCardDto } from "@/lib/queries/decks";
+import { legacy, palette, radii } from "@/lib/tokens";
 
 // Standard MTG aspect (63 × 88 mm).
 const CARD_ASPECT = 63 / 88;
@@ -179,8 +180,8 @@ export function StackEditorSheet({
       onChange={handleSheetChange}
       enablePanDownToClose
       backdropComponent={renderBackdrop}
-      backgroundStyle={{ backgroundColor: "#15151A" }}
-      handleIndicatorStyle={{ backgroundColor: "#9A9AA8", width: 40 }}
+      backgroundStyle={{ backgroundColor: palette.lair800 }}
+      handleIndicatorStyle={{ backgroundColor: palette.boneDim, width: 40 }}
     >
       {pile && (
         <BottomSheetView style={{ flex: 1 }}>
@@ -190,11 +191,11 @@ export function StackEditorSheet({
             style={{ gap: 12 }}
           >
             <View style={{ flex: 1 }}>
-              <Text className="text-[10px] uppercase tracking-wider text-muted">
+              <Text className="text-[10px] uppercase tracking-wider text-bone-dim">
                 Editing
               </Text>
               <Text
-                className="font-brand text-xl text-foreground"
+                className="font-brand text-xl text-bone"
                 numberOfLines={1}
               >
                 {pile.title}
@@ -203,9 +204,9 @@ export function StackEditorSheet({
             <Pressable
               onPress={onClose}
               accessibilityLabel="Close stack editor"
-              className="rounded-full p-2 hover:bg-elevated active:bg-elevated/80"
+              className="rounded-full p-2 hover:bg-lair-700 active:bg-lair-700/80"
             >
-              <Ionicons name="close" size={24} color="#E8E6E3" />
+              <Ionicons name="close" size={24} color={palette.bone} />
             </Pressable>
           </View>
 
@@ -303,10 +304,10 @@ function CardPage({
           overflow: "hidden",
           borderWidth: 2,
           borderColor: colorIdentityAccent(card.colors),
-          backgroundColor: "#1C1C24",
+          backgroundColor: palette.lair700,
           // Active page gets a subtle purple glow so the user can tell
           // which page is "armed" for the action row below.
-          shadowColor: isActive ? "#9B6BF2" : "#000",
+          shadowColor: isActive ? palette.soulfire : palette.black,
           shadowOffset: { width: 0, height: 4 },
           shadowOpacity: isActive ? 0.5 : 0.3,
           shadowRadius: isActive ? 18 : 8,
@@ -323,7 +324,7 @@ function CardPage({
         ) : (
           <View className="flex-1 items-center justify-center p-4">
             <Text
-              className="text-center font-brand text-lg text-foreground"
+              className="text-center font-brand text-lg text-bone"
               numberOfLines={3}
             >
               {card.name}
@@ -343,7 +344,7 @@ function CardPage({
       >
         <View className="flex-row items-center" style={{ gap: 8 }}>
           <Text
-            className="font-brand text-foreground"
+            className="font-brand text-bone"
             style={{ fontSize: 18, fontWeight: "700", textAlign: "center" }}
             numberOfLines={2}
           >
@@ -353,7 +354,7 @@ function CardPage({
         </View>
         {card.type_line && (
           <Text
-            className="mt-1 text-center text-xs text-muted"
+            className="mt-1 text-center text-xs text-bone-dim"
             numberOfLines={1}
           >
             {card.type_line}
@@ -386,8 +387,8 @@ function ActionRow({
 
   return (
     <View
-      className="border-t border-border px-5 pt-4 pb-6"
-      style={{ backgroundColor: "#15151A" }}
+      className="border-t border-hairline px-5 pt-4 pb-6"
+      style={{ backgroundColor: palette.lair800 }}
     >
       <View
         className="flex-row items-center justify-between"
@@ -401,7 +402,7 @@ function ActionRow({
           className="flex-row items-center justify-center rounded-full border border-danger/40 px-5 py-3 hover:bg-danger/10 active:bg-danger/20"
           style={{ gap: 8, opacity: busy ? 0.5 : 1 }}
         >
-          <Ionicons name="trash-outline" size={18} color="#D14B3D" />
+          <Ionicons name="trash-outline" size={18} color={palette.danger} />
           <Text className="font-semibold text-danger">Remove</Text>
         </Pressable>
 
@@ -418,18 +419,18 @@ function ActionRow({
             accessibilityLabel="Decrease copies"
           />
           <View
-            className="items-center justify-center rounded-lg border border-border bg-elevated"
+            className="items-center justify-center rounded-md border border-hairline bg-lair-700"
             style={{ minWidth: 64, height: 44, paddingHorizontal: 12 }}
           >
             {busy ? (
-              <ActivityIndicator size="small" color="#D4B25E" />
+              <ActivityIndicator size="small" color={palette.hoardGold} />
             ) : (
               <>
-                <Text className="font-brand text-xl text-foreground">
+                <Text className="font-brand text-xl text-bone">
                   {count}
                 </Text>
                 <Text
-                  className="text-[9px] uppercase tracking-wider text-muted"
+                  className="text-[9px] uppercase tracking-wider text-bone-dim"
                   style={{ marginTop: -2 }}
                 >
                   {count === 1 ? "copy" : "copies"}
@@ -478,15 +479,15 @@ function CountButton({
       accessibilityLabel={accessibilityLabel}
       className={`items-center justify-center rounded-full border ${
         disabled
-          ? "border-border/40 bg-elevated/40"
-          : "border-border bg-elevated hover:bg-border/40 active:bg-border/40"
+          ? "border-hairline/40 bg-lair-700/40"
+          : "border-hairline bg-lair-700 hover:bg-hairline/40 active:bg-hairline/40"
       }`}
       style={{ width: 44, height: 44 }}
     >
       <Ionicons
         name={icon}
         size={20}
-        color={disabled ? "#6B6B78" : "#E8E6E3"}
+        color={disabled ? palette.boneFaint : palette.bone}
       />
     </Pressable>
   );
@@ -513,21 +514,21 @@ function CountHint({
   const isBasic = !!typeLine?.includes("Basic Land");
   if (max === 1 && !isBasic && format === "COMMANDER") {
     return (
-      <Text className="mt-3 text-center text-[11px] text-muted">
+      <Text className="mt-3 text-center text-[11px] text-bone-dim">
         Commander is singleton — only basic lands can have multiple copies.
       </Text>
     );
   }
   if (!canIncrement && count >= max && Number.isFinite(max)) {
     return (
-      <Text className="mt-3 text-center text-[11px] text-muted">
+      <Text className="mt-3 text-center text-[11px] text-bone-dim">
         {max} copies is the maximum for this format.
       </Text>
     );
   }
   if (!canDecrement && count === 1) {
     return (
-      <Text className="mt-3 text-center text-[11px] text-muted">
+      <Text className="mt-3 text-center text-[11px] text-bone-dim">
         Use Remove to take the last copy out of the deck.
       </Text>
     );
@@ -559,7 +560,7 @@ function PaginationDots({
       style={{ gap: 6 }}
     >
       {start > 0 && (
-        <Text className="text-[10px] text-muted" style={{ marginRight: 2 }}>
+        <Text className="text-[10px] text-bone-dim" style={{ marginRight: 2 }}>
           …
         </Text>
       )}
@@ -569,18 +570,18 @@ function PaginationDots({
           style={{
             width: i === activeIndex ? 16 : 6,
             height: 6,
-            borderRadius: 3,
-            backgroundColor: i === activeIndex ? "#D4B25E" : "#3A3A45",
+            borderRadius: radii.full,
+            backgroundColor: i === activeIndex ? palette.hoardGold : legacy.dotIdle,
           }}
         />
       ))}
       {start + dots.length < count && (
-        <Text className="text-[10px] text-muted" style={{ marginLeft: 2 }}>
+        <Text className="text-[10px] text-bone-dim" style={{ marginLeft: 2 }}>
           …
         </Text>
       )}
       <Text
-        className="ml-3 text-[11px] text-muted"
+        className="ml-3 text-[11px] text-bone-dim"
         style={{ minWidth: 48, textAlign: "right" }}
       >
         {activeIndex + 1} / {count}
@@ -609,20 +610,20 @@ function maxCopiesPerCard(format?: string, typeLine?: string): number {
 }
 
 function colorIdentityAccent(colors?: string[]): string {
-  if (!colors || colors.length === 0) return "#2A2A33";
-  if (colors.length > 1) return "#D4B25E";
+  if (!colors || colors.length === 0) return palette.hairline;
+  if (colors.length > 1) return palette.hoardGold;
   switch (colors[0]) {
     case "W":
-      return "#F8F6E8";
+      return palette.manaWhite;
     case "U":
-      return "#5C9EE5";
+      return palette.manaBlue;
     case "B":
-      return "#2D2A30";
+      return palette.manaBlack;
     case "R":
-      return "#D14B3D";
+      return palette.manaRed;
     case "G":
-      return "#5BA66B";
+      return palette.manaGreen;
     default:
-      return "#2A2A33";
+      return palette.hairline;
   }
 }

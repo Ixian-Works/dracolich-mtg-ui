@@ -30,6 +30,7 @@ import {
   usePopularDecks,
   type DeckDto,
 } from "@/lib/queries/decks";
+import { alpha, palette } from "@/lib/tokens";
 
 export default function DecksScreen() {
   const router = useRouter();
@@ -51,7 +52,7 @@ export default function DecksScreen() {
         <View className="mb-6 px-6">
           <View className="flex-row items-center justify-between">
             <Text
-              className="font-brand text-foreground"
+              className="font-brand text-bone"
               style={{
                 fontSize: 32,
                 fontWeight: "700",
@@ -59,7 +60,7 @@ export default function DecksScreen() {
                 // the brand title carries the same mystical glow across
                 // top-level routes.
                 ...(Platform.OS === "web"
-                  ? ({ textShadow: "0 0 22px rgba(155, 107, 242, 0.45)" } as object)
+                  ? ({ textShadow: `0 0 22px ${alpha(palette.soulfire, 0.45)}` } as object)
                   : {}),
               }}
             >
@@ -67,26 +68,26 @@ export default function DecksScreen() {
             </Text>
             <Pressable
               onPress={() => router.push("/decks/new" as any)}
-              className="flex-row items-center rounded-full bg-primary px-4 py-2 hover:bg-primary/90 active:bg-primary/80"
+              className="flex-row items-center rounded-full bg-soulfire px-4 py-2 hover:bg-soulfire/90 active:bg-soulfire/80"
               // Single object — see comment in app/(app)/index.tsx
               // QuickActionCard for why we avoid style arrays here.
               style={{
                 gap: 6,
                 ...(Platform.OS === "web"
-                  ? ({ boxShadow: "0 0 18px rgba(155, 107, 242, 0.45)" } as object)
+                  ? ({ boxShadow: `0 0 18px ${alpha(palette.soulfire, 0.45)}` } as object)
                   : {
-                      shadowColor: "#9B6BF2",
+                      shadowColor: palette.soulfire,
                       shadowOffset: { width: 0, height: 0 },
                       shadowOpacity: 0.45,
                       shadowRadius: 12,
                     }),
               }}
             >
-              <Ionicons name="add" size={16} color="#FFFFFF" />
+              <Ionicons name="add" size={16} color={palette.white} />
               <Text className="font-semibold text-white">New deck</Text>
             </Pressable>
           </View>
-          <Text className="mt-1 text-muted">
+          <Text className="mt-1 text-bone-dim">
             Browse community decks and your own collection.
           </Text>
         </View>
@@ -120,11 +121,11 @@ function DeckRow({ title, query, onDeckPress }: DeckRowProps) {
   return (
     <View>
       <View className="mb-3 flex-row items-baseline justify-between px-6">
-        <Text className="text-xs uppercase tracking-wider text-muted">
+        <Text className="text-xs uppercase tracking-wider text-bone-dim">
           {title}
         </Text>
         {data && (
-          <Text className="text-xs text-muted">
+          <Text className="text-xs text-bone-dim">
             {data.totalElements.toLocaleString()} total
           </Text>
         )}
@@ -132,12 +133,12 @@ function DeckRow({ title, query, onDeckPress }: DeckRowProps) {
 
       {isLoading && (
         <View className="items-center py-6">
-          <ActivityIndicator size="small" color="#D4B25E" />
+          <ActivityIndicator size="small" color={palette.hoardGold} />
         </View>
       )}
 
       {error && (
-        <View className="mx-6 rounded-lg bg-danger/20 p-3">
+        <View className="mx-6 rounded-md bg-danger/20 p-3">
           <Text className="text-sm text-danger">
             Failed to load {title.toLowerCase()} decks.
           </Text>
@@ -145,8 +146,8 @@ function DeckRow({ title, query, onDeckPress }: DeckRowProps) {
       )}
 
       {data && data.content.length === 0 && !isLoading && (
-        <View className="mx-6 rounded-lg border border-border bg-elevated p-3">
-          <Text className="text-sm text-muted">
+        <View className="mx-6 rounded-md border border-hairline bg-lair-700 p-3">
+          <Text className="text-sm text-bone-dim">
             No decks yet — check back once the community has built some.
           </Text>
         </View>

@@ -24,6 +24,7 @@ import Animated, {
 } from "react-native-reanimated";
 
 import { CardDetailContent } from "@/components/card-detail-content";
+import { palette } from "@/lib/tokens";
 
 interface CardDetailPanelProps {
   cardId: string | null;
@@ -84,13 +85,13 @@ export function CardDetailPanel({
           top: 0,
           bottom: 0,
           width,
-          backgroundColor: "#15151A",
-          borderLeftColor: "#2A2A33",
+          backgroundColor: palette.lair800,
+          borderLeftColor: palette.hairline,
           borderLeftWidth: 1,
           zIndex: 50,
           // Soft shadow on the left edge so the panel reads as floating
           // above the search results.
-          shadowColor: "#000",
+          shadowColor: palette.black,
           shadowOpacity: 0.35,
           shadowRadius: 16,
           shadowOffset: { width: -8, height: 0 },
@@ -99,16 +100,16 @@ export function CardDetailPanel({
       ]}
     >
       {/* Header with close button */}
-      <View className="flex-row items-center justify-between border-b border-border px-4 py-3">
-        <Text className="text-xs uppercase tracking-wider text-muted">
+      <View className="flex-row items-center justify-between border-b border-hairline px-4 py-3">
+        <Text className="text-xs uppercase tracking-wider text-bone-dim">
           Card detail
         </Text>
         <Pressable
           onPress={onClose}
-          className="rounded-full p-2 hover:bg-border/40 active:bg-border/40"
+          className="rounded-full p-2 hover:bg-hairline/40 active:bg-hairline/40"
           accessibilityLabel="Close card detail"
         >
-          <Ionicons name="close" size={20} color="#E8E6E3" />
+          <Ionicons name="close" size={20} color={palette.bone} />
         </Pressable>
       </View>
 

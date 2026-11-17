@@ -38,6 +38,7 @@ import {
   WEB_MAX_CONTENT_WIDTH,
 } from "@/components/page-content";
 import { useDeckById, useDeckStats } from "@/lib/queries/decks";
+import { palette } from "@/lib/tokens";
 
 const WIDE_BREAKPOINT = 768;
 const SIDE_PANEL_WIDTH = 440;
@@ -92,29 +93,29 @@ export default function DeckDetailScreen() {
           <View className="mb-3 flex-row items-center justify-between">
             <Pressable
               onPress={() => router.back()}
-              className="self-start rounded-md px-2 py-1 hover:bg-elevated active:bg-elevated"
+              className="self-start rounded-md px-2 py-1 hover:bg-lair-700 active:bg-lair-700"
             >
-              <Text className="text-sm text-accent">← Back</Text>
+              <Text className="text-sm text-hoard-gold">← Back</Text>
             </Pressable>
             <Pressable
               onPress={() => router.push(`/decks/${id}/build` as any)}
-              className="flex-row items-center rounded-md border border-accent px-3 py-1.5 hover:bg-accent/15 active:bg-accent/20"
+              className="flex-row items-center rounded-md border border-hoard-gold px-3 py-1.5 hover:bg-hoard-gold/15 active:bg-hoard-gold/20"
               style={{ gap: 6 }}
             >
-              <Text className="text-sm text-accent">Edit deck</Text>
+              <Text className="text-sm text-hoard-gold">Edit deck</Text>
             </Pressable>
           </View>
 
           {deckQuery.isLoading && (
             <View className="items-center py-12">
-              <ActivityIndicator size="large" color="#D4B25E" />
+              <ActivityIndicator size="large" color={palette.hoardGold} />
             </View>
           )}
 
           {deckQuery.error && (
-            <View className="rounded-lg bg-danger/20 p-4">
+            <View className="rounded-md bg-danger/20 p-4">
               <Text className="font-semibold text-danger">Failed to load deck</Text>
-              <Text className="mt-1 text-foreground">
+              <Text className="mt-1 text-bone">
                 {(deckQuery.error as Error).message}
               </Text>
             </View>
@@ -142,16 +143,16 @@ export default function DeckDetailScreen() {
                 </View>
 
                 <View style={{ width: statsColumnWidth }}>
-                  <Text className="mb-3 font-brand text-base text-accent">
+                  <Text className="mb-3 font-brand text-base text-hoard-gold">
                     Stats
                   </Text>
                   {statsQuery.isLoading && (
                     <View className="items-center py-4">
-                      <ActivityIndicator size="small" color="#D4B25E" />
+                      <ActivityIndicator size="small" color={palette.hoardGold} />
                     </View>
                   )}
                   {statsQuery.error && (
-                    <View className="rounded-lg bg-danger/20 p-3">
+                    <View className="rounded-md bg-danger/20 p-3">
                       <Text className="text-sm text-danger">
                         Couldn&apos;t load stats:{" "}
                         {(statsQuery.error as Error).message}

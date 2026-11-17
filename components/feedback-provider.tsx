@@ -26,6 +26,7 @@ import {
   clearFeedbackHandler,
   setFeedbackHandler,
 } from "@/lib/feedback";
+import { alpha, palette, radii } from "@/lib/tokens";
 
 const DEFAULT_SUCCESS_MS = 1500;
 
@@ -123,11 +124,11 @@ export function FeedbackProvider({ children }: { children: ReactNode }) {
               alignItems: "center",
               gap: 14,
               padding: 14,
-              borderRadius: 14,
+              borderRadius: radii.lg,
               borderWidth: 1,
               borderColor: borderColorFor(active.kind),
-              backgroundColor: "rgba(20, 17, 30, 0.96)",
-              shadowColor: "#000",
+              backgroundColor: alpha(palette.lair800, 0.96),
+              shadowColor: palette.black,
               shadowOffset: { width: 0, height: 8 },
               shadowOpacity: 0.4,
               shadowRadius: 18,
@@ -142,7 +143,7 @@ export function FeedbackProvider({ children }: { children: ReactNode }) {
             <FeedbackIcon kind={active.kind} />
             <View style={{ flex: 1 }}>
               <Text
-                className="font-semibold text-foreground"
+                className="font-semibold text-bone"
                 style={{ fontSize: 14 }}
                 numberOfLines={1}
               >
@@ -150,7 +151,7 @@ export function FeedbackProvider({ children }: { children: ReactNode }) {
               </Text>
               {active.message && (
                 <Text
-                  className="text-muted"
+                  className="text-bone-dim"
                   style={{ fontSize: 12, marginTop: 2 }}
                   numberOfLines={2}
                 >
@@ -159,7 +160,7 @@ export function FeedbackProvider({ children }: { children: ReactNode }) {
               )}
             </View>
             {tapToDismiss && (
-              <Ionicons name="close" size={18} color="#A39F93" />
+              <Ionicons name="close" size={18} color={palette.boneDim} />
             )}
           </Pressable>
         </Animated.View>
@@ -171,11 +172,11 @@ export function FeedbackProvider({ children }: { children: ReactNode }) {
 function borderColorFor(kind: FeedbackState["kind"]): string {
   switch (kind) {
     case "loading":
-      return "rgba(155, 107, 242, 0.45)";
+      return alpha(palette.soulfire, 0.45);
     case "success":
-      return "rgba(91, 166, 107, 0.45)";
+      return alpha(palette.success, 0.45);
     case "error":
-      return "rgba(209, 75, 61, 0.45)";
+      return alpha(palette.danger, 0.45);
   }
 }
 
@@ -185,10 +186,10 @@ function FeedbackIcon({ kind }: { kind: FeedbackState["kind"] }) {
   if (kind === "loading") {
     return (
       <View
-        className="items-center justify-center rounded-full bg-primary/15"
+        className="items-center justify-center rounded-full bg-soulfire/15"
         style={{ width: 36, height: 36 }}
       >
-        <ActivityIndicator size="small" color="#9B6BF2" />
+        <ActivityIndicator size="small" color={palette.soulfire} />
       </View>
     );
   }
@@ -198,7 +199,7 @@ function FeedbackIcon({ kind }: { kind: FeedbackState["kind"] }) {
         className="items-center justify-center rounded-full bg-success/15"
         style={{ width: 36, height: 36 }}
       >
-        <Ionicons name="checkmark" size={22} color="#5BA66B" />
+        <Ionicons name="checkmark" size={22} color={palette.success} />
       </View>
     );
   }
@@ -207,7 +208,7 @@ function FeedbackIcon({ kind }: { kind: FeedbackState["kind"] }) {
       className="items-center justify-center rounded-full bg-danger/15"
       style={{ width: 36, height: 36 }}
     >
-      <Ionicons name="alert-circle" size={22} color="#D14B3D" />
+      <Ionicons name="alert-circle" size={22} color={palette.danger} />
     </View>
   );
 }

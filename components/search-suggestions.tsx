@@ -33,6 +33,7 @@ import {
 import { ManaCost } from "@/components/mana-cost";
 import { useSearchCards, type CardDto } from "@/lib/queries/cards";
 import { useSearchControls } from "@/lib/search";
+import { alpha, palette, radii } from "@/lib/tokens";
 
 const MAX_RESULTS = 6;
 const WIDE_BREAKPOINT = 768;
@@ -103,7 +104,7 @@ export function SearchSuggestions() {
           style={{
             position: "absolute",
             inset: 0,
-            backgroundColor: "rgba(12, 10, 20, 0.55)",
+            backgroundColor: alpha(palette.lair900, 0.55),
             ...(Platform.OS === "web"
               ? ({
                   backdropFilter: "blur(6px)",
@@ -126,19 +127,19 @@ export function SearchSuggestions() {
           left: isWide ? undefined : 12,
           width: isWide ? 360 : undefined,
           maxHeight: panelMaxHeight,
-          borderRadius: 12,
+          borderRadius: radii.lg,
           overflow: "hidden",
           borderWidth: 1,
-          borderColor: "rgba(45, 37, 64, 0.85)",
-          backgroundColor: "rgba(20, 17, 30, 0.96)",
+          borderColor: alpha(palette.hairline, 0.85),
+          backgroundColor: alpha(palette.lair800, 0.96),
           ...(Platform.OS === "web"
             ? ({
                 backdropFilter: "blur(12px)",
                 WebkitBackdropFilter: "blur(12px)",
-                boxShadow: "0 12px 32px rgba(0, 0, 0, 0.45)",
+                boxShadow: `0 12px 32px ${alpha(palette.black, 0.45)}`,
               } as object)
             : {
-                shadowColor: "#000",
+                shadowColor: palette.black,
                 shadowOffset: { width: 0, height: 8 },
                 shadowOpacity: 0.5,
                 shadowRadius: 20,
@@ -173,8 +174,8 @@ function SuggestionsBody({
     return (
       <View className="px-4 py-5">
         <View className="flex-row items-center" style={{ gap: 8 }}>
-          <ActivityIndicator size="small" color="#D4B25E" />
-          <Text className="text-xs text-muted">Searching…</Text>
+          <ActivityIndicator size="small" color={palette.hoardGold} />
+          <Text className="text-xs text-bone-dim">Searching…</Text>
         </View>
       </View>
     );
@@ -183,7 +184,7 @@ function SuggestionsBody({
   if (isLoading) {
     return (
       <View className="items-center px-4 py-5">
-        <ActivityIndicator size="small" color="#D4B25E" />
+        <ActivityIndicator size="small" color={palette.hoardGold} />
       </View>
     );
   }
@@ -201,7 +202,7 @@ function SuggestionsBody({
   if (cards.length === 0) {
     return (
       <View className="px-4 py-6">
-        <Text className="text-sm text-muted">
+        <Text className="text-sm text-bone-dim">
           No cards match “{query}”.
         </Text>
       </View>
@@ -211,10 +212,10 @@ function SuggestionsBody({
   return (
     <>
       <View
-        className="border-b border-border px-4 py-2"
-        style={{ backgroundColor: "rgba(29, 24, 43, 0.6)" }}
+        className="border-b border-hairline px-4 py-2"
+        style={{ backgroundColor: alpha(palette.lair700, 0.6) }}
       >
-        <Text className="text-[10px] uppercase tracking-wider text-muted">
+        <Text className="text-[10px] uppercase tracking-wider text-bone-dim">
           {cards.length === MAX_RESULTS
             ? `Top ${MAX_RESULTS} matches`
             : `${cards.length} match${cards.length === 1 ? "" : "es"}`}
@@ -249,7 +250,7 @@ function SuggestionRow({
   return (
     <Pressable
       onPress={onPress}
-      className="flex-row items-center border-b border-border/40 px-4 py-3 hover:bg-elevated/60 active:bg-elevated/80"
+      className="flex-row items-center border-b border-hairline/40 px-4 py-3 hover:bg-lair-700/60 active:bg-lair-700/80"
       style={{ gap: 12 }}
     >
       <View
@@ -258,7 +259,7 @@ function SuggestionRow({
           aspectRatio: 63 / 88,
           borderRadius: 4,
           overflow: "hidden",
-          backgroundColor: "#14111E",
+          backgroundColor: palette.lair800,
         }}
       >
         {thumb && (
@@ -277,7 +278,7 @@ function SuggestionRow({
           style={{ gap: 8 }}
         >
           <Text
-            className="font-semibold text-foreground"
+            className="font-semibold text-bone"
             style={{ flex: 1, fontSize: 14 }}
             numberOfLines={1}
           >
@@ -286,12 +287,12 @@ function SuggestionRow({
           {manaCost && <ManaCost cost={manaCost} size={12} />}
         </View>
         {typeLine && (
-          <Text className="text-[11px] text-muted" numberOfLines={1}>
+          <Text className="text-[11px] text-bone-dim" numberOfLines={1}>
             {typeLine}
           </Text>
         )}
       </View>
-      <Ionicons name="chevron-forward" size={16} color="#6F6C66" />
+      <Ionicons name="chevron-forward" size={16} color={palette.boneFaint} />
     </Pressable>
   );
 }

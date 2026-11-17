@@ -27,6 +27,7 @@ import { useAuth } from "@/lib/auth";
 import { confirmDialog } from "@/lib/dialogs";
 import { showFeedback } from "@/lib/feedback";
 import { useDeckById, useDeleteDeck } from "@/lib/queries/decks";
+import { palette } from "@/lib/tokens";
 
 const MOBILE_BREAKPOINT = 768;
 
@@ -110,17 +111,17 @@ export default function DeckReviewScreen() {
           >
             <Pressable
               onPress={() => router.replace(`/decks/${id}/build` as any)}
-              className="rounded-md px-2 py-1 hover:bg-elevated active:bg-elevated"
+              className="rounded-md px-2 py-1 hover:bg-lair-700 active:bg-lair-700"
             >
-              <Text className="text-sm text-accent">← Back to build</Text>
+              <Text className="text-sm text-hoard-gold">← Back to build</Text>
             </Pressable>
 
             <View style={{ flex: 1 }}>
-              <Text className="text-xs uppercase tracking-wider text-muted">
+              <Text className="text-xs uppercase tracking-wider text-bone-dim">
                 Reviewing
               </Text>
               <Text
-                className="font-brand text-2xl text-foreground"
+                className="font-brand text-2xl text-bone"
                 numberOfLines={1}
               >
                 {deck?.name ?? "..."}
@@ -136,18 +137,18 @@ export default function DeckReviewScreen() {
                 style={{ opacity: deleteDeck.isPending ? 0.5 : 1 }}
               >
                 {deleteDeck.isPending ? (
-                  <ActivityIndicator size="small" color="#D14B3D" />
+                  <ActivityIndicator size="small" color={palette.danger} />
                 ) : (
-                  <Ionicons name="trash-outline" size={16} color="#D14B3D" />
+                  <Ionicons name="trash-outline" size={16} color={palette.danger} />
                 )}
               </Pressable>
             )}
 
             <Pressable
               onPress={() => router.push(`/decks/${id}/finalize` as any)}
-              className="rounded-md bg-accent px-4 py-2 hover:bg-accent/90 active:bg-accent/80"
+              className="rounded-md bg-hoard-gold px-4 py-2 hover:bg-hoard-gold/90 active:bg-hoard-gold/80"
             >
-              <Text className="font-semibold text-background">Finish</Text>
+              <Text className="font-semibold text-lair-900">Finish</Text>
             </Pressable>
           </View>
 
@@ -155,9 +156,9 @@ export default function DeckReviewScreen() {
           {/* Quick stats strip */}
           {deck && (
             <View
-              className="mb-8 flex-row flex-wrap rounded-xl border border-border"
+              className="mb-8 flex-row flex-wrap rounded-lg border border-hairline"
               style={{
-                backgroundColor: "#15151A",
+                backgroundColor: palette.lair800,
                 padding: 16,
                 gap: 24,
               }}
@@ -178,16 +179,16 @@ export default function DeckReviewScreen() {
 
           {deckQuery.isLoading && !deck && (
             <View className="items-center py-12">
-              <ActivityIndicator size="large" color="#D4B25E" />
+              <ActivityIndicator size="large" color={palette.hoardGold} />
             </View>
           )}
 
           {deckQuery.error && !deck && (
-            <View className="rounded-lg bg-danger/20 p-4">
+            <View className="rounded-md bg-danger/20 p-4">
               <Text className="font-semibold text-danger">
                 Couldn&apos;t load deck
               </Text>
-              <Text className="mt-1 text-foreground">
+              <Text className="mt-1 text-bone">
                 {(deckQuery.error as Error).message}
               </Text>
             </View>
@@ -219,10 +220,10 @@ export default function DeckReviewScreen() {
 function StatPill({ label, value }: { label: string; value: string }) {
   return (
     <View>
-      <Text className="text-[10px] uppercase tracking-wider text-muted">
+      <Text className="text-[10px] uppercase tracking-wider text-bone-dim">
         {label}
       </Text>
-      <Text className="mt-0.5 font-brand text-base text-foreground">
+      <Text className="mt-0.5 font-brand text-base text-bone">
         {value}
       </Text>
     </View>

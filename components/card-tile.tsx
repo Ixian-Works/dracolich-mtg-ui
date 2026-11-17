@@ -10,6 +10,7 @@ import { Platform, Pressable, Text, View } from "react-native";
 
 import { ManaCost } from "@/components/mana-cost";
 import type { CardDto } from "@/lib/queries/cards";
+import { alpha, legacy, palette, radii } from "@/lib/tokens";
 
 // Standard MTG card aspect ratio: 63mm × 88mm
 const CARD_ASPECT = 63 / 88;
@@ -63,12 +64,12 @@ function CarouselTile({
         width,
         // Subtle mystical halo around every card. The CardCarousel layers a
         // stronger gold glow on the active card on top of this baseline.
-        shadowColor: "#9B6BF2",
+        shadowColor: palette.soulfire,
         shadowOffset: { width: 0, height: 0 },
         shadowOpacity: 0.25,
         shadowRadius: 12,
         ...(Platform.OS === "web"
-          ? ({ boxShadow: "0 0 18px rgba(155, 107, 242, 0.25)" } as object)
+          ? ({ boxShadow: `0 0 18px ${alpha(palette.soulfire, 0.25)}` } as object)
           : {}),
       }}
     >
@@ -81,7 +82,7 @@ function CarouselTile({
           overflow: "hidden",
           // Inner surface for the fallback path — image-loaded path is
           // covered by the <Image> below.
-          backgroundColor: "#14111E",
+          backgroundColor: palette.lair800,
         }}
       >
         {imageUri ? (
@@ -94,9 +95,9 @@ function CarouselTile({
           />
         ) : (
           // Fallback when no art — shows a styled "card back" with the name
-          <View className="flex-1 items-center justify-center bg-elevated p-4">
+          <View className="flex-1 items-center justify-center bg-lair-700 p-4">
             <Text
-              className="text-center font-brand text-lg text-foreground"
+              className="text-center font-brand text-lg text-bone"
               numberOfLines={3}
             >
               {card.name}
@@ -120,10 +121,10 @@ function CarouselTile({
               right: 6,
               width: 8,
               height: 8,
-              borderRadius: 4,
+              borderRadius: radii.full,
               backgroundColor: rarityColor(rarity),
               borderWidth: 1,
-              borderColor: "rgba(0, 0, 0, 0.5)",
+              borderColor: alpha(palette.black, 0.5),
             }}
           />
         )}
@@ -136,18 +137,18 @@ function CarouselTile({
 function rarityColor(rarity: string): string {
   switch (rarity.toLowerCase()) {
     case "uncommon":
-      return "#C0C0C0"; // silver
+      return palette.rarityUncommon;
     case "rare":
-      return "#D4B25E"; // gold (matches accent)
+      return palette.rarityRare;
     case "mythic":
     case "mythic rare":
-      return "#F97316"; // mythic orange
+      return palette.rarityMythic;
     case "special":
-      return "#9B6BF2"; // mystical purple (matches primary)
+      return palette.soulfire;
     case "bonus":
-      return "#EC4899"; // pink
+      return legacy.rarityBonus;
     default:
-      return "#6F6C66";
+      return palette.rarityCommon;
   }
 }
 
@@ -177,7 +178,7 @@ function ListTile({
   return (
     <Pressable
       onPress={onPress}
-      className="mb-2 flex-row gap-3 rounded-lg border border-border bg-elevated p-3 hover:bg-border/30 active:bg-border/30"
+      className="mb-2 flex-row gap-3 rounded-md border border-hairline bg-lair-700 p-3 hover:bg-hairline/30 active:bg-hairline/30"
     >
       {/* Thumbnail */}
       <View
@@ -199,8 +200,8 @@ function ListTile({
             cachePolicy="memory-disk"
           />
         ) : (
-          <View className="flex-1 items-center justify-center bg-surface">
-            <Text className="text-[10px] text-muted">No art</Text>
+          <View className="flex-1 items-center justify-center bg-lair-800">
+            <Text className="text-[10px] text-bone-dim">No art</Text>
           </View>
         )}
       </View>
@@ -209,7 +210,7 @@ function ListTile({
       <View className="flex-1">
         <View className="flex-row items-baseline justify-between gap-2">
           <Text
-            className="flex-1 font-semibold text-foreground"
+            className="flex-1 font-semibold text-bone"
             numberOfLines={1}
           >
             {card.name}
@@ -217,13 +218,13 @@ function ListTile({
           {manaCost && <ManaCost cost={manaCost} size={14} />}
         </View>
         {typeLine && (
-          <Text className="mt-0.5 text-xs text-muted" numberOfLines={1}>
+          <Text className="mt-0.5 text-xs text-bone-dim" numberOfLines={1}>
             {typeLine}
           </Text>
         )}
         {oracleText && (
           <Text
-            className="mt-1 text-xs text-foreground/80"
+            className="mt-1 text-xs text-bone/80"
             numberOfLines={2}
           >
             {oracleText}
@@ -242,22 +243,22 @@ function ListTile({
 // - Colorless / no identity: neutral border color
 
 function colorIdentityAccent(colors?: string[]): string {
-  if (!colors || colors.length === 0) return "#2A2A33"; // border (colorless)
-  if (colors.length > 1) return "#D4B25E"; // accent (gold for multi-color)
+  if (!colors || colors.length === 0) return palette.hairline; // border (colorless)
+  if (colors.length > 1) return palette.hoardGold; // accent (gold for multi-color)
 
   // tailwind tokens (mirrors tailwind.config.js → mtg.*)
   switch (colors[0]) {
     case "W":
-      return "#F8F6E8";
+      return palette.manaWhite;
     case "U":
-      return "#5C9EE5";
+      return palette.manaBlue;
     case "B":
-      return "#2D2A30";
+      return palette.manaBlack;
     case "R":
-      return "#D14B3D";
+      return palette.manaRed;
     case "G":
-      return "#5BA66B";
+      return palette.manaGreen;
     default:
-      return "#2A2A33";
+      return palette.hairline;
   }
 }
