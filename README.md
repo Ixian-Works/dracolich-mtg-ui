@@ -55,3 +55,12 @@ expo-secure-store.
 ```bash
 npm run lint
 ```
+
+## Tests
+
+```bash
+npm test
+```
+
+Tests never reach the network. See "Tests" in [`CLAUDE.md`](./CLAUDE.md) for where they live and how
+requests are faked.

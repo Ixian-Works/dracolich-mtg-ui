@@ -1,8 +1,20 @@
-// Auth context: hydrates JWT from storage on mount, exposes user state + login/logout.
-// Login calls user-api, stores access/refresh tokens, decodes the JWT for user info.
+// Auth context: reads the stored session on mount, exposes user state + login/logout.
+// Login calls user-api and stores the access/refresh tokens; the access token's
+// claims say who the player is. Writing, renewing and removing the tokens is
+// lib/api.ts's job.
 
-import { createContext, useContext, useEffect, useState, ReactNode } from "react";
-import { api, setOnSessionExpired } from "./api";
+import { useQueryClient } from "@tanstack/react-query";
+import { createContext, useCallback, useContext, useEffect, useState, ReactNode } from "react";
+import {
+  api,
+  clearSession,
+  isStale,
+  refreshSession,
+  revokeRefreshToken,
+  setOnSessionExpired,
+  storeSession,
+} from "./api";
+import { readClaims } from "./jwt";
 import { StorageKeys, storage } from "./storage";
 
 interface AuthUser {
@@ -38,50 +50,68 @@ type RegisterResult =
 
 const AuthContext = createContext<AuthContextValue | undefined>(undefined);
 
-// Decode the user info from a JWT without verifying signature.
-// Verification happens server-side; client only needs the claims for display.
-function decodeJwt(token: string): AuthUser | null {
-  try {
-    const [, payload] = token.split(".");
-    // RN/web both have atob; pad if needed
-    const padded = payload + "=".repeat((4 - (payload.length % 4)) % 4);
-    const json = JSON.parse(atob(padded.replace(/-/g, "+").replace(/_/g, "/")));
-    return {
-      userId: json.sub,
-      username: json.username,
-      accessLevel: json.accessLevel,
-    };
-  } catch {
-    return null;
-  }
+// Who an access token belongs to, read from its claims without verifying the
+// signature. Verification happens server-side; the client only needs the
+// claims for display.
+function userFrom(accessToken: string): AuthUser | null {
+  const claims = readClaims(accessToken);
+  if (!claims || typeof claims.sub !== "string") return null;
+  return {
+    userId: claims.sub,
+    username: claims.username ?? "",
+    accessLevel: claims.accessLevel ?? "",
+  };
 }
 
 export function AuthProvider({ children }: { children: ReactNode }) {
+  const queryClient = useQueryClient();
   const [user, setUser] = useState<AuthUser | null>(null);
   const [loading, setLoading] = useState(true);
 
-  // Hydrate from storage on mount
-  useEffect(() => {
-    (async () => {
-      const token = await storage.get(StorageKeys.accessToken);
-      if (token) {
-        const decoded = decodeJwt(token);
-        setUser(decoded);
-      }
-      setLoading(false);
-    })();
-  }, []);
+  // Everything in the query cache was loaded for the player who was signed
+  // in, private decks included. None of it is for whoever holds the device
+  // next. A reset empties the cache and the screens showing it, and loads
+  // what is on screen again as the visitor the device now is.
+  const forgetPlayerData = useCallback(() => {
+    queryClient.getMutationCache().clear();
+    void queryClient.resetQueries();
+  }, [queryClient]);
 
-  // Register a session-expired callback with the api layer: when the
-  // silent-refresh interceptor in api.ts can't get a new access token
-  // (refresh token expired/revoked, network down for refresh only, etc.),
-  // it invokes this and we wipe the React user state so the UI snaps
-  // back to "logged out."
+  // lib/api.ts calls this when user-api refuses the refresh token. By then
+  // the tokens are gone; this brings the React state in line. Declared before
+  // the effect below, which can start a refresh.
   useEffect(() => {
     setOnSessionExpired(() => {
       setUser(null);
+      forgetPlayerData();
     });
     return () => setOnSessionExpired(null);
+  }, [forgetPlayerData]);
+
+  // Read the stored session on mount. Access tokens last 15 minutes, so after
+  // any break the stored one has expired. It still says who the player is,
+  // and the refresh token is what keeps them signed in, so the player is
+  // shown at once and the access token is renewed in the background. No
+  // request waits for this in order to be safe: lib/api.ts never sends a
+  // stale token.
+  useEffect(() => {
+    let mounted = true;
+    (async () => {
+      const accessToken = await storage.get(StorageKeys.accessToken);
+      if (!mounted) return;
+      setUser(accessToken ? userFrom(accessToken) : null);
+      setLoading(false);
+      if (accessToken && isStale(accessToken)) {
+        refreshSession().catch(() => {
+          // Refused by user-api: the callback above has signed the player
+          // out. Not reachable: they stay signed in, and each request fails
+          // with the network's own error until it is back.
+        });
+      }
+    })();
+    return () => {
+      mounted = false;
+    };
   }, []);
 
   async function login(username: string, password: string) {
@@ -89,9 +119,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       method: "POST",
       data: { username, password },
     });
-    await storage.set(StorageKeys.accessToken, result.accessToken);
-    await storage.set(StorageKeys.refreshToken, result.refreshToken);
-    setUser(decodeJwt(result.accessToken));
+    await storeSession(result);
+    setUser(userFrom(result.accessToken));
   }
 
   async function register(input: RegisterInput): Promise<RegisterResult> {
@@ -103,9 +132,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     );
 
     if (result.accessToken && result.refreshToken) {
-      await storage.set(StorageKeys.accessToken, result.accessToken);
-      await storage.set(StorageKeys.refreshToken, result.refreshToken);
-      setUser(decodeJwt(result.accessToken));
+      await storeSession({
+        accessToken: result.accessToken,
+        refreshToken: result.refreshToken,
+      });
+      setUser(userFrom(result.accessToken));
       return { autoSignedIn: true };
     }
 
@@ -116,9 +147,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }
 
   async function logout() {
-    await storage.remove(StorageKeys.accessToken);
-    await storage.remove(StorageKeys.refreshToken);
+    // This device first, so signing out is immediate and works offline.
+    const refreshToken = await clearSession();
     setUser(null);
+    forgetPlayerData();
+    // Then user-api, so a copy of the refresh token is worth nothing for the
+    // rest of its seven days.
+    if (refreshToken) await revokeRefreshToken(refreshToken);
   }
 
   return (
