@@ -18,3 +18,5 @@ export const env = {
     deckBuilder: "/dracolich/mtg-deck-builder/api/v0",
   },
 } as const;
+
+export const probe: number = "not a number";
