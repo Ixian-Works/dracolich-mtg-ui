@@ -14,6 +14,8 @@ import axios, { AxiosError, AxiosHeaders, type AxiosAdapter } from 'axios';
 export interface SeenRequest {
   method: string;
   path: string;
+  /** The query parameters, from the URL and from axios's `params`. */
+  query: Record<string, string>;
   /** The `Authorization` header as sent, or null when there was none. */
   authorization: string | null;
   body: unknown;
@@ -102,9 +104,16 @@ const adapter: AxiosAdapter = async (config) => {
   const headers = AxiosHeaders.from(config.headers);
   const authorization = headers.get('Authorization');
 
+  const parsed = new URL(absolute);
+  const query: Record<string, string> = Object.fromEntries(parsed.searchParams.entries());
+  for (const [key, value] of Object.entries(config.params ?? {})) {
+    if (value !== undefined && value !== null) query[key] = String(value);
+  }
+
   const seen: SeenRequest = {
     method: (config.method ?? 'get').toUpperCase(),
-    path: new URL(absolute).pathname,
+    path: parsed.pathname,
+    query,
     authorization: typeof authorization === 'string' ? authorization : null,
     body: parseBody(config.data),
   };

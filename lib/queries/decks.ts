@@ -4,7 +4,8 @@
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
-import { api } from "../api";
+import { ApiError, api } from "../api";
+import { BOARD_IN_SENTENCE } from "../boards";
 import { useAuth } from "../auth";
 import type { PageRecord } from "./cards";
 
@@ -388,26 +389,58 @@ export function useAddCardToDeck(deckId: string | undefined) {
  * strip those entries from the cached DeckDto so the pile view updates
  * before the network call completes, then settle from the refetch.
  */
+export type CardBoard = "MAINBOARD" | "SIDEBOARD" | "MAYBE_BOARD";
+
+
+/**
+ * Remove one board's entry of a card. A card can sit in several boards at
+ * once as separate entries; the deck builder removes only the entry in the
+ * board named here (`?category=`, default MAINBOARD), and leaves the others.
+ */
 export function useRemoveCardFromDeck(deckId: string | undefined) {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: (cardId: string) =>
-      api.deckBuilder<unknown>(`/decks/${deckId}/cards/${cardId}`, {
-        method: "DELETE",
-      }),
-    onMutate: async (cardId) => {
+    mutationFn: async ({
+      cardId,
+      category = "MAINBOARD",
+    }: {
+      cardId: string;
+      category?: CardBoard;
+    }) => {
+      try {
+        return await api.deckBuilder<unknown>(`/decks/${deckId}/cards/${cardId}`, {
+          method: "DELETE",
+          params: { category },
+        });
+      } catch (err) {
+        // The entry was already gone, from another tab or device. The refetch
+        // in onSettled shows the deck as it really is.
+        if (err instanceof ApiError && err.status === 404) {
+          throw new ApiError(
+            404,
+            `That card was no longer in your ${BOARD_IN_SENTENCE[category]}. Your deck has been refreshed.`,
+            err.errors
+          );
+        }
+        throw err;
+      }
+    },
+    onMutate: async ({ cardId, category = "MAINBOARD" }) => {
       if (!deckId) return { previous: undefined };
       await qc.cancelQueries({ queryKey: ["decks", "byId", deckId] });
       const previous = qc.getQueryData<DeckDto>(["decks", "byId", deckId]);
       if (previous) {
+        // Only the entry in this board goes; the same card in another board stays.
         qc.setQueryData<DeckDto>(["decks", "byId", deckId], {
           ...previous,
-          cards: (previous.cards ?? []).filter((c) => c.card_id !== cardId),
+          cards: (previous.cards ?? []).filter(
+            (c) => !(c.card_id === cardId && (c.card_category ?? "MAINBOARD") === category)
+          ),
         });
       }
       return { previous };
     },
-    onError: (_err, _cardId, ctx) => {
+    onError: (_err, _vars, ctx) => {
       if (deckId && ctx?.previous) {
         qc.setQueryData(["decks", "byId", deckId], ctx.previous);
       }

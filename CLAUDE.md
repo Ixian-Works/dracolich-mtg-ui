@@ -127,7 +127,10 @@ npx jest lib/api.test.ts # one file
   was sent from `fakeApi.requests`. A request with no answer fails the test.
 - `jest.setup.ts` also replaces `expo-secure-store` with an in-memory store, emptied before each
   test. `test/tokens.ts` makes access tokens with a chosen expiry.
-- Covered so far: `lib/api.ts` (refresh, retry, session expiry), `lib/auth.tsx` and `lib/jwt.ts`.
+- `fakeApi.requests` records each request's query parameters as `query`, from the URL and from axios's
+  `params`.
+- Covered so far: `lib/api.ts` (refresh, retry, session expiry), `lib/auth.tsx`, `lib/jwt.ts`, and
+  removing a card from one board (`lib/queries/decks.test.tsx`).
 
 ## Themed confirm dialog (`lib/dialogs.ts` + `components/dialog-provider.tsx`)
 

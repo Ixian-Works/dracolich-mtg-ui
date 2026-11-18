@@ -13,7 +13,7 @@ import { useMemo, useRef } from "react";
 import { Pressable, Text, View } from "react-native";
 
 import { useHoverPreviewWithCleanup } from "@/components/hover-preview";
-import type { DeckCardDto, DeckDto } from "@/lib/queries/decks";
+import type { CardBoard, DeckCardDto, DeckDto } from "@/lib/queries/decks";
 import { alpha, palette } from "@/lib/tokens";
 
 // Standard MTG card aspect (63mm × 88mm).
@@ -58,7 +58,7 @@ interface DeckPileViewProps {
   // Tap on an individual pile card. Build screen wires this to either
   // the legacy remove flow (web) or to opening the stack editor at that
   // card's index (mobile).
-  onCardPress?: (cardId: string) => void;
+  onCardPress?: (cardId: string, board?: CardBoard) => void;
   // Per-type Edit button handler. When provided, each pile header
   // surfaces an "Edit" pencil button that calls this with the cards in
   // that pile and a display title. Build screen wires this to open the
@@ -97,6 +97,7 @@ export function DeckPileView({
 
       <PileBoard
         title="Mainboard"
+        board="MAINBOARD"
         cards={mainboard}
         onCardPress={onCardPress}
         onEditPile={onEditPile}
@@ -106,6 +107,7 @@ export function DeckPileView({
       {sideboard.length > 0 && (
         <PileBoard
           title="Sideboard"
+          board="SIDEBOARD"
           cards={sideboard}
           onCardPress={onCardPress}
           onEditPile={onEditPile}
@@ -116,6 +118,7 @@ export function DeckPileView({
       {maybeboard.length > 0 && (
         <PileBoard
           title="Maybeboard"
+          board="MAYBE_BOARD"
           cards={maybeboard}
           onCardPress={onCardPress}
           onEditPile={onEditPile}
@@ -132,7 +135,7 @@ function CommanderRow({
   containerWidth,
 }: {
   cards: DeckCardDto[];
-  onCardPress?: (cardId: string) => void;
+  onCardPress?: (cardId: string, board?: CardBoard) => void;
   containerWidth: number;
 }) {
   const width = Math.min(160, Math.floor(containerWidth * 0.45));
@@ -158,14 +161,16 @@ function CommanderRow({
 
 function PileBoard({
   title,
+  board,
   cards,
   onCardPress,
   onEditPile,
   containerWidth,
 }: {
   title: string;
+  board: CardBoard;
   cards: DeckCardDto[];
-  onCardPress?: (cardId: string) => void;
+  onCardPress?: (cardId: string, board?: CardBoard) => void;
   onEditPile?: (cards: DeckCardDto[], title: string) => void;
   containerWidth: number;
 }) {
@@ -217,7 +222,7 @@ function PileBoard({
             type={p.type}
             cards={p.cards}
             width={pileWidth}
-            onCardPress={onCardPress}
+            onCardPress={onCardPress ? (cardId: string) => onCardPress(cardId, board) : undefined}
             onEdit={
               onEditPile
                 ? () => onEditPile(p.cards, pluralize(p.type, totalCardCount(p.cards)))
@@ -240,7 +245,7 @@ function TypePile({
   type: string;
   cards: DeckCardDto[];
   width: number;
-  onCardPress?: (cardId: string) => void;
+  onCardPress?: (cardId: string, board?: CardBoard) => void;
   onEdit?: () => void;
 }) {
   const total = totalCardCount(cards);
@@ -380,6 +385,8 @@ function PileCard({
     <Pressable
       ref={ref as any}
       onPress={onPress}
+      accessibilityRole="button"
+      accessibilityLabel={card.name}
       onHoverIn={handleHoverIn}
       onHoverOut={hover.hide}
       style={{

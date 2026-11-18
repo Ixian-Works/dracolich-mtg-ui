@@ -22,7 +22,7 @@ import Animated, {
 } from "react-native-reanimated";
 
 import { useHoverPreviewWithCleanup } from "@/components/hover-preview";
-import type { DeckCardDto, DeckDto } from "@/lib/queries/decks";
+import type { CardBoard, DeckCardDto, DeckDto } from "@/lib/queries/decks";
 import { palette, radii } from "@/lib/tokens";
 
 // Standard MTG card aspect (63mm × 88mm).
@@ -74,7 +74,7 @@ interface DeckPileGridProps {
   // Optional — when provided, a tap on any pile card or the commander
   // calls this with the card id. The review screen uses this to open
   // the mobile preview sheet on tap.
-  onCardPress?: (cardId: string) => void;
+  onCardPress?: (cardId: string, board?: CardBoard) => void;
 }
 
 export function DeckPileGrid({
@@ -117,6 +117,7 @@ export function DeckPileGrid({
 
       <PileSection
         title="Mainboard"
+        board="MAINBOARD"
         cards={mainboard}
         pileWidth={pileWidth}
         onCardPress={onCardPress}
@@ -125,6 +126,7 @@ export function DeckPileGrid({
       {sideboard.length > 0 && (
         <PileSection
           title="Sideboard"
+          board="SIDEBOARD"
           cards={sideboard}
           pileWidth={pileWidth}
           onCardPress={onCardPress}
@@ -134,6 +136,7 @@ export function DeckPileGrid({
       {maybeboard.length > 0 && (
         <PileSection
           title="Maybeboard"
+          board="MAYBE_BOARD"
           cards={maybeboard}
           pileWidth={pileWidth}
           onCardPress={onCardPress}
@@ -152,7 +155,7 @@ function CommanderHero({
 }: {
   cards: DeckCardDto[];
   containerWidth: number;
-  onCardPress?: (cardId: string) => void;
+  onCardPress?: (cardId: string, board?: CardBoard) => void;
 }) {
   // One commander → big. Two (Partner/Background) → split.
   const heroWidth =
@@ -287,14 +290,16 @@ function CommanderCard({
 
 function PileSection({
   title,
+  board,
   cards,
   pileWidth,
   onCardPress,
 }: {
   title: string;
+  board: CardBoard;
   cards: DeckCardDto[];
   pileWidth: number;
-  onCardPress?: (cardId: string) => void;
+  onCardPress?: (cardId: string, board?: CardBoard) => void;
 }) {
   const groups = useMemo(() => groupByType(cards), [cards]);
   const total = useMemo(() => totalCardCount(cards), [cards]);
@@ -343,7 +348,7 @@ function PileSection({
             cards={p.cards}
             width={pileWidth}
             index={i}
-            onCardPress={onCardPress}
+            onCardPress={onCardPress ? (cardId: string) => onCardPress(cardId, board) : undefined}
           />
         ))}
       </View>
@@ -364,7 +369,7 @@ function TypePile({
   cards: DeckCardDto[];
   width: number;
   index: number;
-  onCardPress?: (cardId: string) => void;
+  onCardPress?: (cardId: string, board?: CardBoard) => void;
 }) {
   const total = totalCardCount(cards);
 
@@ -534,6 +539,8 @@ function PileCard({
       <Pressable
         ref={ref as any}
         onPress={onPress}
+        accessibilityRole="button"
+        accessibilityLabel={card.name}
         onHoverIn={handleHoverIn}
         onHoverOut={hover.hide}
         style={{ flex: 1 }}
