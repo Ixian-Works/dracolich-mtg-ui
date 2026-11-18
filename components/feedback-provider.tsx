@@ -170,7 +170,7 @@ export function FeedbackProvider({ children }: { children: ReactNode }) {
                 hitSlop={8}
                 style={{ minHeight: 44, minWidth: 44, justifyContent: "center", paddingHorizontal: 8 }}
               >
-                <Text className="font-semibold text-hoard-gold" style={{ fontSize: 14 }}>
+                <Text className="font-semibold text-soulfire" style={{ fontSize: 14 }}>
                   {active.action.label}
                 </Text>
               </Pressable>

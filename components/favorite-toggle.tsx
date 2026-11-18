@@ -13,17 +13,19 @@ import { Platform, Pressable, Text, View } from "react-native";
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
-  withSequence,
   withSpring,
 } from "react-native-reanimated";
 
 import { useAuth } from "@/lib/auth";
+import type { SignInReason } from "@/lib/copy";
 import { showFeedback } from "@/lib/feedback";
 import type { DeckDto } from "@/lib/queries/decks";
 import { useIsFavorite, useToggleFavorite } from "@/lib/queries/favorites";
 import { palette } from "@/lib/tokens";
 
-export const SIGN_IN_TO_FAVORITE = "Sign in to keep favorites.";
+
+// The design system's spring-pop. It moves to the shared motion tokens with #32.
+const SPRING_POP = { stiffness: 420, damping: 18 };
 
 function countLabel(count: number): string {
   return count === 1 ? "1 favorite" : `${count.toLocaleString()} favorites`;
@@ -52,7 +54,7 @@ export function FavoriteToggle({
         accessible
         accessibilityLabel={countLabel(count)}
       >
-        <Ionicons name="star" size={16} color={palette.boneDim} />
+        <Ionicons name="star-outline" size={16} color={palette.boneDim} />
         <Text className="text-sm text-bone-dim">{count.toLocaleString()}</Text>
       </View>
     );
@@ -60,10 +62,11 @@ export function FavoriteToggle({
 
   const onPress = () => {
     if (!user) {
-      router.push({ pathname: "/login", params: { reason: SIGN_IN_TO_FAVORITE } });
+      router.push({ pathname: "/login", params: { reason: "favorites" satisfies SignInReason } });
       return;
     }
-    scale.value = withSequence(withSpring(1.25, { damping: 6 }), withSpring(1));
+    scale.value = 1.25;
+    scale.value = withSpring(1, SPRING_POP);
     if (Platform.OS !== "web") {
       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
     }
@@ -87,6 +90,8 @@ export function FavoriteToggle({
       accessibilityRole="togglebutton"
       accessibilityLabel={`Favorite ${deck.name}`}
       accessibilityState={{ checked: favorited }}
+      // Read after the name: "Favorite Mono Red, 12 favorites, on".
+      accessibilityValue={{ text: countLabel(count) }}
       hitSlop={4}
       style={{
         minHeight: 44,
@@ -105,10 +110,7 @@ export function FavoriteToggle({
           color={favorited ? palette.hoardGold : palette.boneDim}
         />
       </Animated.View>
-      <Text
-        className={favorited ? "text-sm text-hoard-gold" : "text-sm text-bone-dim"}
-        accessibilityLabel={countLabel(count)}
-      >
+      <Text className={favorited ? "text-sm text-hoard-gold" : "text-sm text-bone-dim"}>
         {count.toLocaleString()}
       </Text>
     </Pressable>

@@ -63,14 +63,17 @@ export default function FavoritesScreen() {
               onAction={() => router.push("/login")}
             />
           ) : favorites.isLoading ? (
-            <Grid>
-              {Array.from({ length: PLACEHOLDERS }, (_, i) => (
-                <Placeholder key={i} />
-              ))}
-            </Grid>
+            // One name for the whole set of placeholders, read once.
+            <View accessible accessibilityLabel="Loading favorites">
+              <Grid>
+                {Array.from({ length: PLACEHOLDERS }, (_, i) => (
+                  <Placeholder key={i} />
+                ))}
+              </Grid>
+            </View>
           ) : favorites.error ? (
             <Message
-              text={`Your favorites didn't load. ${(favorites.error as Error).message}`}
+              text="Your favorites didn't load. Check your connection and try again."
               actionLabel="Retry"
               onAction={() => favorites.refetch()}
             />
@@ -106,13 +109,11 @@ function Grid({ children }: { children: React.ReactNode }) {
 function Placeholder() {
   return (
     <View
-      accessibilityLabel="Loading"
       style={{
         width: TILE_WIDTH,
         aspectRatio: 63 / 88,
         borderRadius: 16,
-        backgroundColor: palette.lair800,
-        opacity: 0.6,
+        backgroundColor: palette.lair700,
       }}
     />
   );
@@ -133,10 +134,10 @@ function Message({
     <Pressable
       onPress={onAction}
       accessibilityRole="button"
-      className="mt-4 self-start rounded-md border border-hoard-gold px-4 py-2"
-      style={{ minHeight: 44, justifyContent: "center" }}
+      className="mt-4 self-start rounded-md border px-4 py-2"
+      style={{ minHeight: 44, justifyContent: "center", borderColor: palette.edge }}
     >
-      <Text className="text-sm text-hoard-gold">{actionLabel}</Text>
+      <Text className="text-sm text-soulfire">{actionLabel}</Text>
     </Pressable>
   );
   return (

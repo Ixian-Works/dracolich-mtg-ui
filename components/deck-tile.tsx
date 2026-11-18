@@ -41,8 +41,13 @@ export function DeckTile({ deck, onPress, width = 180, footer }: DeckTileProps) 
   const accent = aggregateColorAccent(resolvedColors);
 
   return (
+    // The strip with the star is a sibling of the cover's Pressable, not
+    // inside it, so a screen reader offers the star as its own control.
+    <View style={{ width }}>
     <Pressable
       onPress={onPress}
+      accessibilityRole="button"
+      accessibilityLabel={deck.name}
       style={{
         width,
         // Mystical purple halo. Tinted to the accent color when the deck is
@@ -118,13 +123,14 @@ export function DeckTile({ deck, onPress, width = 180, footer }: DeckTileProps) 
           </View>
         </LinearGradient>
       </View>
+    </Pressable>
       {footer && (
         <View className="mt-1 flex-row items-center justify-between" style={{ minHeight: 44 }}>
           <ColorPips colors={resolvedColors} />
           {footer}
         </View>
       )}
-    </Pressable>
+    </View>
   );
 }
 

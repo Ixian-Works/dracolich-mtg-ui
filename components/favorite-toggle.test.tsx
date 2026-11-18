@@ -3,7 +3,7 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react-nativ
 import { router } from 'expo-router';
 import type { ReactNode } from 'react';
 
-import { FavoriteToggle, SIGN_IN_TO_FAVORITE } from '@/components/favorite-toggle';
+import { FavoriteToggle } from '@/components/favorite-toggle';
 import { AuthProvider } from '@/lib/auth';
 import * as feedback from '@/lib/feedback';
 import type { DeckDto } from '@/lib/queries/decks';
@@ -44,7 +44,8 @@ test('is a toggle button with a name and an on/off state, and reads its count as
 
   const button = await screen.findByRole('togglebutton', { name: 'Favorite Mono Red' });
   await waitFor(() => expect(button.props.accessibilityState).toEqual({ checked: true }));
-  expect(screen.getByLabelText('12 favorites')).toBeTruthy();
+  // The count is read with the button, after its name.
+  expect(button.props.accessibilityValue).toEqual({ text: '12 favorites' });
 });
 
 test('on your own deck it is only the count, with no button', async () => {
@@ -60,7 +61,8 @@ test('signed out, a tap opens sign-in with the reason', async () => {
 
   fireEvent.press(await screen.findByRole('togglebutton'));
 
-  expect(router.push).toHaveBeenCalledWith({ pathname: '/login', params: { reason: SIGN_IN_TO_FAVORITE } });
+  // A key, never the sentence: sign-in picks its own words.
+  expect(router.push).toHaveBeenCalledWith({ pathname: '/login', params: { reason: 'favorites' } });
   expect(fakeApi.requestsTo('/favorites')).toHaveLength(0);
 });
 
