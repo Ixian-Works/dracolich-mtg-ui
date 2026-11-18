@@ -25,6 +25,7 @@ import {
 } from "react-native";
 
 import { DeckTile } from "@/components/deck-tile";
+import { FavoriteToggle } from "@/components/favorite-toggle";
 import { PageContent } from "@/components/page-content";
 import {
   useLatestDecks,
@@ -171,6 +172,7 @@ function DeckRow({ title, query, onDeckPress }: DeckRowProps) {
               key={deck.id}
               deck={deck}
               onPress={() => onDeckPress(deck)}
+              footer={<FavoriteToggle deck={deck} />}
             />
           ))}
         </ScrollView>

@@ -129,8 +129,13 @@ npx jest lib/api.test.ts # one file
   test. `test/tokens.ts` makes access tokens with a chosen expiry.
 - `fakeApi.requests` records each request's query parameters as `query`, from the URL and from axios's
   `params`.
-- Covered so far: `lib/api.ts` (refresh, retry, session expiry), `lib/auth.tsx`, `lib/jwt.ts`, and
-  removing a card from one board (`lib/queries/decks.test.tsx`).
+- Covered so far: `lib/api.ts` (refresh, retry, session expiry), `lib/auth.tsx`, `lib/jwt.ts`,
+  removing a card from one board (`lib/queries/decks.test.tsx`), the favorites queries
+  (`lib/queries/favorites.test.tsx`), the favorite star (`components/favorite-toggle.test.tsx`), the
+  deck box (`components/deck-tile.test.tsx`) and `lib/copy.ts`.
+- **Words the interface shows live in `lib/copy.ts`.** A screen told why it was opened gets a key,
+  never a sentence: sign-in takes `reason=favorites` and shows its own line, or its usual one for a
+  key it doesn't know.
 
 ## Themed confirm dialog (`lib/dialogs.ts` + `components/dialog-provider.tsx`)
 
@@ -258,7 +263,11 @@ Key constants in the file (tunable): `SPACING_FACTOR` (slot width), `SWIPE_COMMI
 - [x] `build.tsx` — two-pane debounced card search + live deck contents, click-to-add
 - [x] Deck components: `deck-tile`, `deck-header`, `deck-contents`, `deck-stats-panel`, `deck-art-mosaic`, `deck-card-sheet`, `deck-pile-grid`, `deck-pile-view`, `stack-editor-sheet`
 - [x] AI suggest / analyze via `useDeckAiSuggest` / `useDeckAiAnalyze` → `api.deckBuilder("/ai/decks/{id}/...")`
-- [x] Account screens: profile, my decks, favorites, settings
+- [x] Account screens: profile, my decks, settings
+- [x] Favorites: the star (`components/favorite-toggle.tsx`) on deck pages and deck boxes, and the
+  Favorites screen, from the player's own listing (`lib/queries/favorites.ts`). The listing's order
+  isn't "most recently favorited", and a star can be wrong past a player's 100th favorite, until
+  Ixian-Works/dracolich-mtg-deck-builder-api#32.
 - [ ] Drag-and-drop adds on the build screen (click-to-add handler is what the drop target would call)
 - [ ] iOS pile-mode polish (see gotcha 14)
 

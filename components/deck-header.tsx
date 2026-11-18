@@ -6,7 +6,6 @@
 // brand serif over the gradient — feels like the cover of a book, not a
 // list-page heading.
 
-import { Ionicons } from "@expo/vector-icons";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import { Text, View } from "react-native";
@@ -118,14 +117,6 @@ export function DeckHeader({ deck }: DeckHeaderProps) {
             <Tag label={deck.visibility} />
           )}
           <ColorIdentity colors={deck.colors} />
-          {deck.favorites_count != null && deck.favorites_count > 0 && (
-            <View className="flex-row items-center" style={{ gap: 3 }}>
-              <Ionicons name="heart" size={13} color={palette.manaRed} />
-              <Text className="text-xs text-bone">
-                {deck.favorites_count.toLocaleString()}
-              </Text>
-            </View>
-          )}
         </View>
       </View>
     </View>

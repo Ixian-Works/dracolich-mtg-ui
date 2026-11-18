@@ -159,6 +159,22 @@ export function FeedbackProvider({ children }: { children: ReactNode }) {
                 </Text>
               )}
             </View>
+            {active.action && (
+              <Pressable
+                accessibilityRole="button"
+                onPress={() => {
+                  const { onPress } = active.action!;
+                  dismiss();
+                  onPress();
+                }}
+                hitSlop={8}
+                style={{ minHeight: 44, minWidth: 44, justifyContent: "center", paddingHorizontal: 8 }}
+              >
+                <Text className="font-semibold text-soulfire" style={{ fontSize: 14 }}>
+                  {active.action.label}
+                </Text>
+              </Pressable>
+            )}
             {tapToDismiss && (
               <Ionicons name="close" size={18} color={palette.boneDim} />
             )}
