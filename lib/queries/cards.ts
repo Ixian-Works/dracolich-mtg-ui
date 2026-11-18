@@ -154,14 +154,15 @@ export function useInfiniteSearchCards({
   name,
   colorIdentity,
   types,
+  setCode,
   sort,
   size = 20,
-}: Omit<SearchCardsArgs, "page"> = {}) {
+}: Omit<SearchCardsArgs, "page"> & { setCode?: string } = {}) {
   return useInfiniteQuery({
     queryKey: [
       "cards",
       "search-infinite",
-      { name, colorIdentity, types, sort, size },
+      { name, colorIdentity, types, setCode, sort, size },
     ],
     initialPageParam: 0,
     queryFn: ({ pageParam }) => {
@@ -172,6 +173,8 @@ export function useInfiniteSearchCards({
       if (types && types.length > 0) {
         body.types = types.map((t) => t.toUpperCase());
       }
+      // The library matches a card's set by its code, whatever its case.
+      if (setCode) body.set_code = setCode;
       return api.mtgLibrary<PageRecord<CardDto>>("/cards/search", {
         method: "POST",
         params: { name, page: pageParam, size, sort },

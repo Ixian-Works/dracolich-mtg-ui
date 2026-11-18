@@ -31,6 +31,7 @@ import { CardCarousel } from "@/components/card-carousel";
 import { CardDetailPanel } from "@/components/card-detail-panel";
 import { CardDetailSheet } from "@/components/card-detail-sheet";
 import { CardTile } from "@/components/card-tile";
+import { CardsSetsSwitch } from "@/components/cards-sets-switch";
 import {
   ColorFilterChips,
   TypeFilterChips,
@@ -121,6 +122,7 @@ export default function CardsSearchScreen() {
       >
         <PageContent>
           <View className="px-6">
+            <CardsSetsSwitch current="cards" />
             <Text className="mb-1 font-brand text-3xl text-hoard-gold">Cards</Text>
             <Text className="mb-4 text-bone-dim">{subtitle}</Text>
           </View>
