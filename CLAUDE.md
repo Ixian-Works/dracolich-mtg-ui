@@ -54,7 +54,9 @@ app/
 └── (app)/                      route group — wrapped in NavShell
     ├── _layout.tsx             renders <NavShell><Slot /></NavShell>
     ├── index.tsx               dashboard (recent decks, popular decks, card of the day, stats rail)
-    ├── sets.tsx                UnderConstruction stub (Phase 4.4)
+    ├── sets/
+    │   ├── index.tsx           set list: name search, type chips, digital-only switch
+    │   └── [code].tsx          one set: header and its cards
     ├── cards/
     │   ├── index.tsx           search + filter chips, paginated results
     │   └── [id].tsx            card detail
@@ -271,7 +273,9 @@ Key constants in the file (tunable): `SPACING_FACTOR` (slot width), `SWIPE_COMMI
 - [ ] Drag-and-drop adds on the build screen (click-to-add handler is what the drop target would call)
 - [ ] iOS pile-mode polish (see gotcha 14)
 
-**Phase 4.4 — Sets**: not started — `/sets` is an `UnderConstruction` stub. Current priority.
+**Phase 4.4 — Sets**: shipped (Ixian-Works/dracolich-mtg-ui#36). The list can't group by year until
+set search can sort, and a set's page shows one printing per card until
+Ixian-Works/dracolich-mtg-library-api#12 (`LIBRARY_HOLDS_EVERY_PRINTING` in `lib/queries/sets.ts`).
 
 **Phase 4.5 — Ship to stores**: not started.
 
