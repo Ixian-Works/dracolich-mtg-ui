@@ -61,6 +61,7 @@ import {
   useDeckById,
   useDeleteDeck,
   useRemoveCardFromDeck,
+  type CardBoard,
   useUpdateCardCount,
   type CardSuggestionDto,
   type DeckCardDto,
@@ -327,9 +328,9 @@ export default function DeckBuildScreen() {
   const handleRemoveCard = useCallback(
     async (cardId: string) => {
       if (!deck) return;
-      // Find the card so the confirm message is human-readable. The
-      // backend DELETE strips every entry with this cardId, so the prompt
-      // owns up to "all N copies" when there's more than one.
+      // Find the card so the confirm message is human-readable. This removes
+      // the card from every board it is in, one entry per request, so the
+      // prompt owns up to "all N copies" when there's more than one.
       const entries = (deck.cards ?? []).filter(
         (c) => c.card_id === cardId
       );
@@ -354,7 +355,12 @@ export default function DeckBuildScreen() {
       if (!ok) return;
 
       try {
-        await removeCard.mutateAsync(cardId);
+        for (const entry of entries) {
+          await removeCard.mutateAsync({
+            cardId,
+            category: entry.card_category ?? "MAINBOARD",
+          });
+        }
       } catch {
         // Error surfaces inline below via removeCard.error
       }
@@ -458,13 +464,8 @@ export default function DeckBuildScreen() {
   // for the card being adjusted (matters when the same cardId exists in
   // both mainboard and sideboard).
   const handleChangeCount = useCallback(
-    async (cardId: string, newCount: number) => {
+    async (cardId: string, newCount: number, category: CardBoard) => {
       if (!deck) return;
-      const all = [...(deck.cards ?? [])];
-      const entry = all.find((c) => c.card_id === cardId);
-      if (!entry) return;
-      const category = (entry.card_category ??
-        "MAINBOARD") as "MAINBOARD" | "SIDEBOARD" | "MAYBE_BOARD";
       try {
         await updateCount.mutateAsync({ cardId, count: newCount, category });
       } catch {
@@ -480,9 +481,9 @@ export default function DeckBuildScreen() {
   // dialog stays on the build screen's tap-to-remove path for users
   // who skip the editor.
   const handleEditorRemove = useCallback(
-    async (cardId: string) => {
+    async (cardId: string, category: CardBoard) => {
       try {
-        await removeCard.mutateAsync(cardId);
+        await removeCard.mutateAsync({ cardId, category });
       } catch {
         // Surfaced via removeCard.error inline below
       }
