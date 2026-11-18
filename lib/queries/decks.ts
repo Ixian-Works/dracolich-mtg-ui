@@ -5,6 +5,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { ApiError, api } from "../api";
+import { BOARD_IN_SENTENCE } from "../boards";
 import { useAuth } from "../auth";
 import type { PageRecord } from "./cards";
 
@@ -390,11 +391,6 @@ export function useAddCardToDeck(deckId: string | undefined) {
  */
 export type CardBoard = "MAINBOARD" | "SIDEBOARD" | "MAYBE_BOARD";
 
-const BOARD_NAMES: Record<CardBoard, string> = {
-  MAINBOARD: "main deck",
-  SIDEBOARD: "sideboard",
-  MAYBE_BOARD: "maybeboard",
-};
 
 /**
  * Remove one board's entry of a card. A card can sit in several boards at
@@ -422,7 +418,7 @@ export function useRemoveCardFromDeck(deckId: string | undefined) {
         if (err instanceof ApiError && err.status === 404) {
           throw new ApiError(
             404,
-            `That card was no longer in your ${BOARD_NAMES[category]}. Your deck has been refreshed.`,
+            `That card was no longer in your ${BOARD_IN_SENTENCE[category]}. Your deck has been refreshed.`,
             err.errors
           );
         }

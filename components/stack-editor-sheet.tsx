@@ -52,13 +52,10 @@ import {
 } from "react-native";
 
 import { ManaCost } from "@/components/mana-cost";
+import { boardOf, removeButtonLabel } from "@/lib/boards";
 import type { CardBoard, DeckCardDto } from "@/lib/queries/decks";
 import { legacy, palette, radii } from "@/lib/tokens";
 
-// The board this entry sits in. An entry saved without one is mainboard.
-function boardOf(card: DeckCardDto): CardBoard {
-  return card.card_category ?? "MAINBOARD";
-}
 
 // Standard MTG aspect (63 × 88 mm).
 const CARD_ASPECT = 63 / 88;
@@ -403,7 +400,7 @@ function ActionRow({
         <Pressable
           onPress={busy ? undefined : () => onRemoveCard(card.card_id, boardOf(card))}
           disabled={busy}
-          accessibilityLabel="Remove card from deck"
+          accessibilityLabel={removeButtonLabel(card)}
           className="flex-row items-center justify-center rounded-full border border-danger/40 px-5 py-3 hover:bg-danger/10 active:bg-danger/20"
           style={{ gap: 8, opacity: busy ? 0.5 : 1 }}
         >

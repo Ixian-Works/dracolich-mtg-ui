@@ -49,6 +49,7 @@ import { PageContent } from "@/components/page-content";
 import { ApiError } from "@/lib/api";
 import { useAuth } from "@/lib/auth";
 import { confirmDialog } from "@/lib/dialogs";
+import { editorTargetFor, removalFor } from "@/lib/boards";
 import { showFeedback } from "@/lib/feedback";
 import {
   useInfiniteSearchCards,
@@ -325,42 +326,24 @@ export default function DeckBuildScreen() {
     [addCard, getCardLimit]
   );
 
+  // Wide screens: a tap on a card removes it from the board it was tapped
+  // in, after a prompt that names that board. Its entries in other boards
+  // stay. A commander isn't removed this way.
   const handleRemoveCard = useCallback(
-    async (cardId: string) => {
-      if (!deck) return;
-      // Find the card so the confirm message is human-readable. This removes
-      // the card from every board it is in, one entry per request, so the
-      // prompt owns up to "all N copies" when there's more than one.
-      const entries = (deck.cards ?? []).filter(
-        (c) => c.card_id === cardId
-      );
-      const inCommander = (deck.commander ?? []).some(
-        (c) => c.card_id === cardId
-      );
-      if (entries.length === 0 && !inCommander) return;
-
-      const name = entries[0]?.name ?? "this card";
-      const totalCopies = entries.reduce((s, c) => s + (c.count ?? 1), 0);
-      const message =
-        totalCopies > 1
-          ? `Remove all ${totalCopies} copies of ${name} from your deck?`
-          : `Remove ${name} from your deck?`;
+    async (cardId: string, board?: CardBoard) => {
+      const removal = removalFor(deck, cardId, board);
+      if (!removal) return;
 
       const ok = await confirmDialog({
         title: "Remove card",
-        message,
+        message: removal.message,
         confirmText: "Remove",
         destructive: true,
       });
       if (!ok) return;
 
       try {
-        for (const entry of entries) {
-          await removeCard.mutateAsync({
-            cardId,
-            category: entry.card_category ?? "MAINBOARD",
-          });
-        }
+        await removeCard.mutateAsync({ cardId, category: removal.board });
       } catch {
         // Error surfaces inline below via removeCard.error
       }
@@ -428,13 +411,13 @@ export default function DeckBuildScreen() {
   // from category + primary type, then position the editor at that
   // card's index within the resulting list.
   const handleCardTap = useCallback(
-    (cardId: string) => {
+    (cardId: string, board?: CardBoard) => {
       const all = [...(deck?.commander ?? []), ...(deck?.cards ?? [])];
-      const tapped = all.find((c) => c.card_id === cardId);
-      if (!tapped) return;
-      const category =
-        (tapped.card_category as "MAINBOARD" | "SIDEBOARD" | "MAYBE_BOARD") ??
-        "MAINBOARD";
+      // The tapped board's entry, not the card's first entry in any board.
+      const target = editorTargetFor(deck, cardId, board);
+      if (!target) return;
+      const tapped = target.entry;
+      const category = target.board;
       const type = primaryType(tapped.type_line);
       const pile = all.filter((c) => {
         const cat = c.card_category ?? "MAINBOARD";
@@ -1613,7 +1596,7 @@ function CurrentDeckPanel({
   // viewports the parent passes the remove handler directly (tap =
   // confirm-then-remove). On mobile, the parent passes a function that
   // opens the stack editor positioned at the tapped card.
-  onCardPress: (cardId: string) => void;
+  onCardPress: (cardId: string, board?: CardBoard) => void;
   // Per-pile Edit button handler. Mobile-only. Omit to hide the buttons.
   onEditPile?: (cards: DeckCardDto[], title: string) => void;
 }) {
