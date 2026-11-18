@@ -30,6 +30,9 @@ export interface FeedbackState {
   // For success only — milliseconds to auto-close. Defaults to 1500. Set
   // to 0 to require manual dismiss. Ignored for loading + error.
   autoCloseMs?: number;
+  // An optional button on the popup, such as "Undo". Pressing it runs
+  // onPress and closes the popup.
+  action?: { label: string; onPress: () => void };
 }
 
 export interface FeedbackHandle {

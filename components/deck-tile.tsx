@@ -10,6 +10,7 @@
 // Bottom-of-card overlay carries the deck name + format + a row of small
 // color-identity pips so a deck is recognizable at a glance.
 
+import type React from "react";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import { Platform, Pressable, Text, View } from "react-native";
@@ -24,9 +25,12 @@ interface DeckTileProps {
   onPress?: () => void;
   // Width drives the height via the card aspect ratio.
   width?: number;
+  // Shown in a strip under the cover, never over the art: the colour pips
+  // with this at the right end, such as the favorite star.
+  footer?: React.ReactNode;
 }
 
-export function DeckTile({ deck, onPress, width = 180 }: DeckTileProps) {
+export function DeckTile({ deck, onPress, width = 180, footer }: DeckTileProps) {
   const cover = pickCoverImage(deck);
   // The backend's `colors` field is sometimes empty even on decks that
   // clearly have colored cards (commander/cards present but the
@@ -109,10 +113,17 @@ export function DeckTile({ deck, onPress, width = 180 }: DeckTileProps) {
             <Text className="text-[10px] uppercase tracking-wider text-hoard-gold">
               {deck.format ?? ""}
             </Text>
-            <ColorPips colors={resolvedColors} />
+            {/* With a strip under the cover, the pips live there instead. */}
+            {!footer && <ColorPips colors={resolvedColors} />}
           </View>
         </LinearGradient>
       </View>
+      {footer && (
+        <View className="mt-1 flex-row items-center justify-between" style={{ minHeight: 44 }}>
+          <ColorPips colors={resolvedColors} />
+          {footer}
+        </View>
+      )}
     </Pressable>
   );
 }

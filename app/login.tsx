@@ -12,7 +12,7 @@ import {
 } from "react-native";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Link, router } from "expo-router";
+import { Link, router, useLocalSearchParams } from "expo-router";
 import { z } from "zod";
 
 import { FormField } from "@/components/form-field";
@@ -30,6 +30,8 @@ type FormValues = z.infer<typeof schema>;
 
 export default function LoginScreen() {
   const { login } = useAuth();
+  // Why sign-in was opened, such as "Sign in to keep favorites." Shown above the form.
+  const { reason } = useLocalSearchParams<{ reason?: string }>();
   const [serverError, setServerError] = useState<string | null>(null);
 
   const {
@@ -111,7 +113,7 @@ export default function LoginScreen() {
           Sign in
         </Text>
         <Text className="mb-8 text-center text-bone-dim">
-          Welcome back to Dracolich
+          {reason ?? "Welcome back to Dracolich"}
         </Text>
 
         <FormField

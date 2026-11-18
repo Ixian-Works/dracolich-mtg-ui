@@ -32,6 +32,7 @@ import { CardDetailPanel } from "@/components/card-detail-panel";
 import { CardDetailSheet } from "@/components/card-detail-sheet";
 import { DeckContents } from "@/components/deck-contents";
 import { DeckHeader } from "@/components/deck-header";
+import { FavoriteToggle } from "@/components/favorite-toggle";
 import { DeckStatsPanel } from "@/components/deck-stats-panel";
 import {
   PageContent,
@@ -97,6 +98,8 @@ export default function DeckDetailScreen() {
             >
               <Text className="text-sm text-hoard-gold">← Back</Text>
             </Pressable>
+            <View className="flex-row items-center" style={{ gap: 8 }}>
+              {deckQuery.data && <FavoriteToggle deck={deckQuery.data} />}
             <Pressable
               onPress={() => router.push(`/decks/${id}/build` as any)}
               className="flex-row items-center rounded-md border border-hoard-gold px-3 py-1.5 hover:bg-hoard-gold/15 active:bg-hoard-gold/20"
@@ -104,6 +107,7 @@ export default function DeckDetailScreen() {
             >
               <Text className="text-sm text-hoard-gold">Edit deck</Text>
             </Pressable>
+            </View>
           </View>
 
           {deckQuery.isLoading && (

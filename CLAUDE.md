@@ -127,7 +127,11 @@ npx jest lib/api.test.ts # one file
   was sent from `fakeApi.requests`. A request with no answer fails the test.
 - `jest.setup.ts` also replaces `expo-secure-store` with an in-memory store, emptied before each
   test. `test/tokens.ts` makes access tokens with a chosen expiry.
-- Covered so far: `lib/api.ts` (refresh, retry, session expiry), `lib/auth.tsx` and `lib/jwt.ts`.
+- `fakeApi.requests` records each request's query parameters as `query`, from the URL and from axios's
+  `params`.
+- Covered so far: `lib/api.ts` (refresh, retry, session expiry), `lib/auth.tsx`, `lib/jwt.ts`, the
+  favorites queries (`lib/queries/favorites.test.tsx`) and the favorite star
+  (`components/favorite-toggle.test.tsx`).
 
 ## Themed confirm dialog (`lib/dialogs.ts` + `components/dialog-provider.tsx`)
 
@@ -255,7 +259,11 @@ Key constants in the file (tunable): `SPACING_FACTOR` (slot width), `SWIPE_COMMI
 - [x] `build.tsx` — two-pane debounced card search + live deck contents, click-to-add
 - [x] Deck components: `deck-tile`, `deck-header`, `deck-contents`, `deck-stats-panel`, `deck-art-mosaic`, `deck-card-sheet`, `deck-pile-grid`, `deck-pile-view`, `stack-editor-sheet`
 - [x] AI suggest / analyze via `useDeckAiSuggest` / `useDeckAiAnalyze` → `api.deckBuilder("/ai/decks/{id}/...")`
-- [x] Account screens: profile, my decks, favorites, settings
+- [x] Account screens: profile, my decks, settings
+- [x] Favorites: the star (`components/favorite-toggle.tsx`) on deck pages and deck boxes, and the
+  Favorites screen, from the player's own listing (`lib/queries/favorites.ts`). The listing's order
+  isn't "most recently favorited", and a star can be wrong past a player's 100th favorite, until
+  Ixian-Works/dracolich-mtg-deck-builder-api#32.
 - [ ] Drag-and-drop adds on the build screen (click-to-add handler is what the drop target would call)
 - [ ] iOS pile-mode polish (see gotcha 14)
 

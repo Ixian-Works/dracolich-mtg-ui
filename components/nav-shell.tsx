@@ -154,7 +154,7 @@ function useAccountMenuItems(): AccountMenuItem[] {
     return [
       { label: "Profile", href: "/account" },
       { label: "My decks", href: "/account/decks" },
-      { label: "Favorite decks", href: "/account/favorites" },
+      { label: "Favorites", href: "/account/favorites" },
       { label: "Settings", href: "/account/settings" },
       { label: "Sign out", action: confirmLogout, variant: "danger" },
     ];

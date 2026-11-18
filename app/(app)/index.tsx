@@ -35,6 +35,7 @@ import {
 } from "react-native";
 
 import { DeckTile } from "@/components/deck-tile";
+import { FavoriteToggle } from "@/components/favorite-toggle";
 import { PageContent } from "@/components/page-content";
 import { useAuth } from "@/lib/auth";
 import { useNewestCards, type CardDto } from "@/lib/queries/cards";
@@ -420,6 +421,7 @@ function DeckGrid({
           deck={deck}
           width={tileWidth}
           onPress={() => router.push(`/decks/${deck.id}` as any)}
+          footer={<FavoriteToggle deck={deck} />}
         />
       ))}
     </View>

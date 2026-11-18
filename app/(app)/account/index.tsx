@@ -28,7 +28,7 @@ export default function AccountScreen() {
 
       <View className="mt-8 gap-2">
         <MenuItem label="My Decks" href="/account/decks" />
-        <MenuItem label="Favorite Decks" href="/account/favorites" />
+        <MenuItem label="Favorites" href="/account/favorites" />
         <MenuItem label="Settings" href="/account/settings" />
       </View>
 
