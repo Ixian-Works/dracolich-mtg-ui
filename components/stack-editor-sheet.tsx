@@ -52,8 +52,10 @@ import {
 } from "react-native";
 
 import { ManaCost } from "@/components/mana-cost";
-import type { DeckCardDto } from "@/lib/queries/decks";
+import { boardOf, removeButtonLabel } from "@/lib/boards";
+import type { CardBoard, DeckCardDto } from "@/lib/queries/decks";
 import { legacy, palette, radii } from "@/lib/tokens";
+
 
 // Standard MTG aspect (63 × 88 mm).
 const CARD_ASPECT = 63 / 88;
@@ -73,8 +75,8 @@ export interface StackEditorSheetProps {
   // Mutation callbacks — the parent wires these to the existing
   // useAddCardToDeck / useUpdateCardCount / useRemoveCardFromDeck
   // mutations so deck state stays consistent with the build screen.
-  onChangeCount: (cardId: string, count: number) => Promise<void> | void;
-  onRemoveCard: (cardId: string) => Promise<void> | void;
+  onChangeCount: (cardId: string, count: number, board: CardBoard) => Promise<void> | void;
+  onRemoveCard: (cardId: string, board: CardBoard) => Promise<void> | void;
   // Whether a mutation is currently in flight (drives the action-row
   // spinner). The parent passes the aggregate of all three mutations'
   // pending states.
@@ -377,8 +379,8 @@ function ActionRow({
   card: DeckCardDto;
   format?: string;
   busy: boolean;
-  onChangeCount: (cardId: string, count: number) => Promise<void> | void;
-  onRemoveCard: (cardId: string) => Promise<void> | void;
+  onChangeCount: (cardId: string, count: number, board: CardBoard) => Promise<void> | void;
+  onRemoveCard: (cardId: string, board: CardBoard) => Promise<void> | void;
 }) {
   const count = card.count ?? 1;
   const max = maxCopiesPerCard(format, card.type_line);
@@ -396,9 +398,9 @@ function ActionRow({
       >
         {/* Delete — removes all copies of this card from the deck */}
         <Pressable
-          onPress={busy ? undefined : () => onRemoveCard(card.card_id)}
+          onPress={busy ? undefined : () => onRemoveCard(card.card_id, boardOf(card))}
           disabled={busy}
-          accessibilityLabel="Remove card from deck"
+          accessibilityLabel={removeButtonLabel(card)}
           className="flex-row items-center justify-center rounded-full border border-danger/40 px-5 py-3 hover:bg-danger/10 active:bg-danger/20"
           style={{ gap: 8, opacity: busy ? 0.5 : 1 }}
         >
@@ -415,7 +417,7 @@ function ActionRow({
           <CountButton
             icon="remove"
             disabled={!canDecrement}
-            onPress={() => onChangeCount(card.card_id, count - 1)}
+            onPress={() => onChangeCount(card.card_id, count - 1, boardOf(card))}
             accessibilityLabel="Decrease copies"
           />
           <View
@@ -441,7 +443,7 @@ function ActionRow({
           <CountButton
             icon="add"
             disabled={!canIncrement}
-            onPress={() => onChangeCount(card.card_id, count + 1)}
+            onPress={() => onChangeCount(card.card_id, count + 1, boardOf(card))}
             accessibilityLabel="Add a copy"
           />
         </View>

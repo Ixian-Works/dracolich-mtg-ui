@@ -129,10 +129,10 @@ npx jest lib/api.test.ts # one file
   test. `test/tokens.ts` makes access tokens with a chosen expiry.
 - `fakeApi.requests` records each request's query parameters as `query`, from the URL and from axios's
   `params`.
-- Covered so far: `lib/api.ts` (refresh, retry, session expiry), `lib/auth.tsx`, `lib/jwt.ts`, the
-  favorites queries (`lib/queries/favorites.test.tsx`), the favorite star
-  (`components/favorite-toggle.test.tsx`), the deck box (`components/deck-tile.test.tsx`) and
-  `lib/copy.ts`.
+- Covered so far: `lib/api.ts` (refresh, retry, session expiry), `lib/auth.tsx`, `lib/jwt.ts`,
+  removing a card from one board (`lib/queries/decks.test.tsx`), the favorites queries
+  (`lib/queries/favorites.test.tsx`), the favorite star (`components/favorite-toggle.test.tsx`), the
+  deck box (`components/deck-tile.test.tsx`) and `lib/copy.ts`.
 - **Words the interface shows live in `lib/copy.ts`.** A screen told why it was opened gets a key,
   never a sentence: sign-in takes `reason=favorites` and shows its own line, or its usual one for a
   key it doesn't know.
