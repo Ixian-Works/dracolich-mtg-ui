@@ -26,6 +26,7 @@ import {
 import Animated, { FadeIn, FadeOut, SlideInLeft, SlideOutLeft } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { alpha, palette, radii } from "@/lib/tokens";
+import { SIGN_OUT_CONFIRM } from "@/lib/copy";
 
 type IoniconName = ComponentProps<typeof Ionicons>["name"];
 
@@ -140,13 +141,7 @@ function useAccountMenuItems(): AccountMenuItem[] {
   // the platform split — native Alert on iOS/Android, window.confirm on web
   // (RN-Web's Alert polyfill silently drops the button array).
   const confirmLogout = async () => {
-    const ok = await confirmDialog({
-      title: "Sign out?",
-      message: "You'll need to sign in again to access your account.",
-      confirmText: "Sign out",
-      cancelText: "Cancel",
-      destructive: true,
-    });
+    const ok = await confirmDialog(SIGN_OUT_CONFIRM);
     if (ok) await logout();
   };
 

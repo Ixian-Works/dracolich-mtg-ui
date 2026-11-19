@@ -134,7 +134,11 @@ npx jest lib/api.test.ts # one file
 - Covered so far: `lib/api.ts` (refresh, retry, session expiry), `lib/auth.tsx`, `lib/jwt.ts`,
   removing a card from one board (`lib/queries/decks.test.tsx`), the favorites queries
   (`lib/queries/favorites.test.tsx`), the favorite star (`components/favorite-toggle.test.tsx`), the
-  deck box (`components/deck-tile.test.tsx`) and `lib/copy.ts`.
+  deck box (`components/deck-tile.test.tsx`), `lib/copy.ts`, and Settings with the assistant
+  setting (`components/settings-screen.test.tsx`).
+- **Settings kept on the device live in `lib/preferences.ts`,** one TanStack Query entry each over
+  `lib/storage.ts`. They outlive sign-out. The assistant switch is the first: off until the player
+  turns it on, and the builder's own switch starts from it without changing it.
 - **Words the interface shows live in `lib/copy.ts`.** A screen told why it was opened gets a key,
   never a sentence: sign-in takes `reason=favorites` and shows its own line, or its usual one for a
   key it doesn't know.

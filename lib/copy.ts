@@ -19,3 +19,25 @@ export function signInLine(reason: unknown): string {
     ? SIGN_IN_REASONS[reason as SignInReason]
     : SIGN_IN_DEFAULT;
 }
+
+/** The question before signing out, wherever sign-out is offered. */
+export const SIGN_OUT_CONFIRM = {
+  title: "Sign out?",
+  message: "You'll need to sign in again to access your account.",
+  confirmText: "Sign out",
+  cancelText: "Cancel",
+  destructive: true,
+} as const;
+
+export const SETTINGS = {
+  title: "Settings",
+  account: "Account",
+  username: "Username",
+  signOut: "Sign out",
+  assistant: "Assistant",
+  counsel: "Counsel while building",
+  counselHint: "The dracolich suggests cards and reviews your deck as you build.",
+  signIn: "Sign in",
+  maker: "An Ixian Works product",
+  saveFailed: "That setting didn't save. Try again.",
+} as const;

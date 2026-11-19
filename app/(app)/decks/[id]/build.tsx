@@ -69,6 +69,7 @@ import {
   type DeckDto,
 } from "@/lib/queries/decks";
 import { alpha, palette, radii } from "@/lib/tokens";
+import { useAssistantForThisDeck } from "@/lib/preferences";
 
 const WIDE_BREAKPOINT = 768;
 const PAGE_PADDING = 24;
@@ -227,7 +228,9 @@ export default function DeckBuildScreen() {
   // Gate on having SOME content — ANALYSIS sessions need a deck list and
   // BUILD sessions need a commander; firing against a totally empty deck
   // just errors out on the backend.
-  const [aiEnabled, setAiEnabled] = useState(false);
+  // Starts from the Settings switch; flipping it here changes only this deck's
+  // visit, never the setting.
+  const [aiEnabled, setAiEnabled] = useAssistantForThisDeck();
   const deckHasContent =
     (deck?.card_count ?? 0) > 0 || hasCommanderSet(deck);
   const aiSuggest = useDeckAiSuggest(id, aiEnabled && deckHasContent);
