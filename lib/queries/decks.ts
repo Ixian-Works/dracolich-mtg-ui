@@ -257,6 +257,36 @@ export function useUpdateDeck(deckId: string | undefined) {
  * On error: rolls back to the pre-mutation snapshots so the list shows
  * the deck back where it was.
  */
+/**
+ * Copy a deck into the player's own: someone else's public deck, or one's own
+ * deck whatever its visibility (Ixian-Works/dracolich-mtg-deck-builder-api#33).
+ * The copy is private and names the deck it came from.
+ */
+export function useCopyDeck() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (deckId: string) =>
+      api.deckBuilder<DeckDto>(`/decks/${deckId}/copy`, { method: "POST" }),
+    onSuccess: (copy) => {
+      qc.setQueryData(["decks", "byId", copy.id], copy);
+      qc.invalidateQueries({ queryKey: ["decks", "mine"] });
+    },
+  });
+}
+
+/**
+ * The deck a copy came from, for its "Copied from" line. Nothing when it's
+ * gone or can no longer be opened, so no retry and no error to show.
+ */
+export function useDeckOrigin(copiedFromId: string | undefined) {
+  return useQuery({
+    queryKey: ["decks", "byId", copiedFromId],
+    queryFn: () => api.deckBuilder<DeckDto>(`/decks/${copiedFromId}`),
+    enabled: !!copiedFromId,
+    retry: false,
+  });
+}
+
 export function useDeleteDeck() {
   const qc = useQueryClient();
   return useMutation({
