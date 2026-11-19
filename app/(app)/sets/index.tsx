@@ -5,14 +5,15 @@
 // with no year headings; they arrive with newest-first sorting.
 
 import { useEffect, useMemo, useState } from "react";
-import { FlatList, Pressable, Switch, Text, TextInput, View } from "react-native";
+import { FlatList, Pressable, Text, TextInput, View } from "react-native";
 import { useRouter } from "expo-router";
 
 import { CardsSetsSwitch } from "@/components/cards-sets-switch";
-import { Chip } from "@/components/filter-chips";
 import { PageContent } from "@/components/page-content";
 import { SET_ROW_HEIGHT, SetRow } from "@/components/set-row";
-import { SET_TYPES, setTypeLabel, useInfiniteSets, type SetType } from "@/lib/queries/sets";
+import { SetTypePicker } from "@/components/set-type-picker";
+import { ToggleSwitch } from "@/components/toggle-switch";
+import { useInfiniteSets, type SetType } from "@/lib/queries/sets";
 import { palette } from "@/lib/tokens";
 
 const PLACEHOLDER_ROWS = 10;
@@ -57,22 +58,14 @@ export default function SetsScreen() {
           style={{ minHeight: 44, borderColor: palette.edge, backgroundColor: palette.lair700 }}
         />
       </View>
-      <View className="mt-3 flex-row flex-wrap px-6" style={{ gap: 8 }}>
-        {SET_TYPES.map((t) => (
-          <Chip
-            key={t}
-            label={setTypeLabel(t)}
-            selected={type === t}
-            onPress={() => setType(type === t ? undefined : t)}
-          />
-        ))}
+      <View className="mt-3 px-6">
+        <SetTypePicker value={type} onChange={setType} />
       </View>
       <View className="mt-3 mb-2 flex-row items-center px-6" style={{ gap: 10, minHeight: 44 }}>
-        <Switch
+        <ToggleSwitch
           value={includeDigital}
           onValueChange={setIncludeDigital}
           accessibilityLabel="Include digital-only sets"
-          trackColor={{ true: palette.soulfireDeep, false: palette.hairline }}
         />
         <Text className="text-sm text-bone-dim">Include digital-only sets</Text>
       </View>
