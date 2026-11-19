@@ -47,8 +47,9 @@ test('signed in: the username, Sign out, and the assistant switch, off at first'
   expect(await screen.findByText('jace')).toBeTruthy();
   expect(screen.getByRole('button', { name: 'Sign out' })).toBeTruthy();
   const assistant = screen.getByRole('switch', { name: 'Counsel while building' });
-  await waitFor(() => expect(assistant.props.disabled).toBeFalsy());
-  expect(assistant.props.value).toBe(false);
+  await waitFor(() => expect(assistant.props.accessibilityState).toEqual({ checked: false, disabled: false }));
+  // One switch for a screen reader: the drawn one inside the row is hidden.
+  expect(screen.getAllByRole('switch')).toHaveLength(1);
 });
 
 test('only rows whose backend exists are shown', async () => {
@@ -65,9 +66,10 @@ test('the assistant switch survives a restart', async () => {
   await signIn();
   const first = show();
   const assistant = await screen.findByRole('switch', { name: 'Counsel while building' });
-  await waitFor(() => expect(assistant.props.disabled).toBeFalsy());
+  await waitFor(() => expect(assistant.props.accessibilityState.disabled).toBe(false));
 
-  fireEvent(assistant, 'valueChange', true);
+  // A tap anywhere on the row flips it.
+  fireEvent.press(assistant);
   await waitFor(async () => expect(await storage.get(PreferenceKeys.assistantOn)).toBe('on'));
   first.unmount();
   queryClient.clear();
@@ -75,7 +77,7 @@ test('the assistant switch survives a restart', async () => {
   // A fresh cache, as after the app starts again.
   show();
   await waitFor(() =>
-    expect(screen.getByRole('switch', { name: 'Counsel while building' }).props.value).toBe(true)
+    expect(screen.getByRole('switch', { name: 'Counsel while building' }).props.accessibilityState.checked).toBe(true)
   );
 });
 

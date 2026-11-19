@@ -6,8 +6,9 @@
 import Constants from "expo-constants";
 import { router } from "expo-router";
 import type { ReactNode } from "react";
-import { Pressable, ScrollView, Switch, Text, View } from "react-native";
+import { Pressable, ScrollView, Text, View } from "react-native";
 
+import { ToggleSwitch } from "@/components/toggle-switch";
 import { SETTINGS, SIGN_OUT_CONFIRM } from "@/lib/copy";
 import { useAuth } from "@/lib/auth";
 import { confirmDialog } from "@/lib/dialogs";
@@ -25,7 +26,7 @@ export default function SettingsScreen() {
   return (
     <ScrollView contentContainerStyle={{ padding: 24, alignItems: "center" }}>
       <View style={{ width: "100%", maxWidth: 640 }}>
-        <Text accessibilityRole="header" className="font-brand text-3xl text-bone">
+        <Text accessibilityRole="header" className="font-brand text-bone" style={{ fontSize: 32 }}>
           {SETTINGS.title}
         </Text>
 
@@ -37,19 +38,19 @@ export default function SettingsScreen() {
             </Group>
 
             <Group title={SETTINGS.assistant}>
+              {/* The whole row is the switch: one target the row's height, read
+                  as one switch with its name and state. */}
               <Row
                 label={SETTINGS.counsel}
                 hint={SETTINGS.counselHint}
+                role="switch"
+                checked={assistant.on}
+                disabled={!assistant.loaded}
+                onPress={() => assistant.setOn(!assistant.on)}
                 right={
-                  <Switch
-                    accessibilityLabel={SETTINGS.counsel}
-                    accessibilityHint={SETTINGS.counselHint}
-                    value={assistant.on}
-                    disabled={!assistant.loaded}
-                    onValueChange={assistant.setOn}
-                    trackColor={{ false: palette.lair700, true: palette.soulfire }}
-                    thumbColor={palette.bone}
-                  />
+                  <View accessibilityElementsHidden importantForAccessibility="no-hide-descendants" pointerEvents="none">
+                    <ToggleSwitch value={assistant.on} disabled={!assistant.loaded} />
+                  </View>
                 }
               />
             </Group>
@@ -58,8 +59,8 @@ export default function SettingsScreen() {
           <Pressable
             accessibilityRole="button"
             onPress={() => router.push("/login")}
-            className="mt-8 items-center justify-center rounded-md bg-soulfire px-6"
-            style={{ minHeight: 44 }}
+            className="mt-8 items-center justify-center rounded-md px-6 hover:opacity-90 active:opacity-80"
+            style={{ minHeight: 44, backgroundColor: palette.soulfireDeep }}
           >
             <Text className="font-semibold text-bone">{SETTINGS.signIn}</Text>
           </Pressable>
@@ -92,11 +93,17 @@ function Row({
   hint,
   right,
   onPress,
+  role = "button",
+  checked,
+  disabled,
 }: {
   label: string;
   hint?: string;
   right?: ReactNode;
   onPress?: () => void;
+  role?: "button" | "switch";
+  checked?: boolean;
+  disabled?: boolean;
 }) {
   const body = (
     <>
@@ -110,7 +117,16 @@ function Row({
   const style = { minHeight: 56 };
   const className = "flex-row items-center border-b border-hairline py-3";
   return onPress ? (
-    <Pressable accessibilityRole="button" onPress={onPress} className={className} style={style}>
+    <Pressable
+      accessibilityRole={role}
+      accessibilityLabel={label}
+      accessibilityHint={hint}
+      accessibilityState={role === "switch" ? { checked, disabled } : { disabled }}
+      disabled={disabled}
+      onPress={onPress}
+      className={`${className} hover:bg-lair-700 active:bg-lair-700`}
+      style={style}
+    >
       {body}
     </Pressable>
   ) : (
