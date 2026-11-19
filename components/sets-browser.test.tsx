@@ -4,7 +4,10 @@ import type { ReactNode } from 'react';
 
 import SetScreen from '@/app/(app)/sets/[code]';
 import SetsScreen from '@/app/(app)/sets/index';
-import { SetRow, releaseMonth } from '@/components/set-row';
+import { SET_ROW_HEIGHT, SetRow, releaseMonth } from '@/components/set-row';
+import { COMMON_SET_TYPES, OTHER_SET_TYPES } from '@/components/set-type-picker';
+import { router } from 'expo-router';
+import { ActivityIndicator } from 'react-native';
 import type { SetDto } from '@/lib/queries/sets';
 import { deferred, failure, fakeApi, ok, type Reply } from '@/test/fake-api';
 
@@ -59,6 +62,10 @@ describe('a set row', () => {
     expect(screen.getByText('MH3 · Draft innovation · June 2024')).toBeTruthy();
   });
 
+  test('a row is 56 points tall, the strip height', () => {
+    expect(SET_ROW_HEIGHT).toBe(56);
+  });
+
   test('the release month is never shifted by the time zone', () => {
     expect(releaseMonth('2024-06-01')).toBe('June 2024');
   });
@@ -84,7 +91,9 @@ describe('the Sets list', () => {
     show(<SetsScreen />);
     await screen.findByText('Modern Horizons 3');
 
-    fireEvent.press(screen.getByText('Commander'));
+    fireEvent.press(screen.getByRole('button', { name: 'Type' }));
+    fireEvent.press(screen.getByRole('menuitem', { name: 'Commander' }));
+    expect(screen.getByRole('button', { name: 'Type: Commander' })).toBeTruthy();
     fireEvent(screen.getByLabelText('Include digital-only sets'), 'valueChange', true);
 
     await waitFor(() =>
@@ -127,7 +136,81 @@ describe('the Sets list', () => {
   });
 });
 
+describe('the Type control', () => {
+  test('one button; its list has the five common types, a divider, then the rest A to Z', async () => {
+    fakeApi.on('POST', '/sets/search', () => ok(page([mh3])));
+    show(<SetsScreen />);
+    await screen.findByText('Modern Horizons 3');
+
+    // One control, not a chip per type.
+    expect(screen.queryByText('Expansion')).toBeNull();
+    fireEvent.press(screen.getByRole('button', { name: 'Type' }));
+
+    const names = screen.getAllByRole('menuitem').map((item) => item.props.accessibilityLabel ?? '');
+    const labels = screen.getAllByRole('menuitem').map((item) => {
+      const texts = item.findAll((n: any) => typeof n.props.children === 'string');
+      return texts[0].props.children as string;
+    });
+    expect(labels.slice(0, 5)).toEqual(['Expansion', 'Core', 'Masters', 'Commander', 'Draft innovation']);
+    expect(labels.slice(5)).toEqual([...labels.slice(5)].sort((a, b) => a.localeCompare(b)));
+    expect(labels).toHaveLength(COMMON_SET_TYPES.length + OTHER_SET_TYPES.length);
+    expect(names).toHaveLength(24);
+    expect(screen.getByTestId('set-type-divider')).toBeTruthy();
+    await act(async () => {});
+  });
+
+  test('a chosen type can be cleared', async () => {
+    fakeApi.on('POST', '/sets/search', () => ok(page([mh3])));
+    show(<SetsScreen />);
+    await screen.findByText('Modern Horizons 3');
+
+    fireEvent.press(screen.getByRole('button', { name: 'Type' }));
+    fireEvent.press(screen.getByRole('menuitem', { name: 'Masters' }));
+    await waitFor(() =>
+      expect(fakeApi.requestsTo('/sets/search').at(-1)?.body).toEqual({ collection_set_type: 'MASTERS', digital: false })
+    );
+
+    fireEvent.press(screen.getByRole('button', { name: 'Clear type' }));
+    expect(screen.getByRole('button', { name: 'Type' })).toBeTruthy();
+    await waitFor(() => expect(fakeApi.requestsTo('/sets/search').at(-1)?.body).toEqual({ digital: false }));
+  });
+});
+
 describe("a set's page", () => {
+  test('while it loads: placeholders, never a spinner', async () => {
+    const answer = deferred<Reply>();
+    fakeApi.on('GET', '/sets', () => answer.promise);
+    fakeApi.on('POST', '/cards/search', () => ok(page([])));
+    show(<SetScreen />);
+
+    expect(screen.getByLabelText('Loading the set')).toBeTruthy();
+    expect(screen.getAllByTestId('row-placeholder')).toHaveLength(8);
+    expect(screen.UNSAFE_queryAllByType(ActivityIndicator)).toHaveLength(0);
+    answer.resolve(ok(mh3));
+    await screen.findByText('Modern Horizons 3');
+    await screen.findByText('No cards from this set yet.');
+  });
+
+  test('a code that is no set: "No set with that code." and Browse sets', async () => {
+    fakeApi.on('GET', '/sets', () => failure(404, 'DMD021'));
+    fakeApi.on('POST', '/cards/search', () => ok(page([])));
+    show(<SetScreen />);
+
+    expect(await screen.findByText('No set with that code.')).toBeTruthy();
+    expect(screen.queryByText('Retry')).toBeNull();
+    fireEvent.press(screen.getByRole('button', { name: 'Browse sets' }));
+    expect(router.replace).toHaveBeenCalledWith('/sets');
+  });
+
+  test('a failed request still offers Retry', async () => {
+    fakeApi.on('GET', '/sets', () => failure(503, 'DMD001'));
+    fakeApi.on('POST', '/cards/search', () => ok(page([])));
+    show(<SetScreen />);
+
+    expect(await screen.findByText("This set didn't load. Check your connection and try again.")).toBeTruthy();
+    expect(screen.getByRole('button', { name: 'Retry' })).toBeTruthy();
+  });
+
   test('the header, the note, and the cards searched by this set', async () => {
     fakeApi.on('GET', '/sets', () => ok(mh3));
     fakeApi.on('POST', '/cards/search', () =>

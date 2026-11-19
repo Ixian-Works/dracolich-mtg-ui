@@ -6,9 +6,9 @@
 // printing (Ixian-Works/dracolich-mtg-library-api#12).
 
 import { Ionicons } from "@expo/vector-icons";
-import { useLocalSearchParams } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import { useCallback, useMemo, useState } from "react";
-import { ActivityIndicator, FlatList, Pressable, Text, View, useWindowDimensions } from "react-native";
+import { FlatList, Pressable, Text, View, useWindowDimensions } from "react-native";
 
 import { CardDetailPanel } from "@/components/card-detail-panel";
 import { CardDetailSheet } from "@/components/card-detail-sheet";
@@ -16,6 +16,7 @@ import { CardTile } from "@/components/card-tile";
 import { ColorFilterChips, TypeFilterChips, toggleSetKey } from "@/components/filter-chips";
 import { PageContent } from "@/components/page-content";
 import { SetSymbol } from "@/components/set-row";
+import { ApiError } from "@/lib/api";
 import { useInfiniteSearchCards } from "@/lib/queries/cards";
 import { LIBRARY_HOLDS_EVERY_PRINTING, setTypeLabel, useSetByCode, type SetDto } from "@/lib/queries/sets";
 import { palette } from "@/lib/tokens";
@@ -52,12 +53,9 @@ export default function SetScreen() {
   const rows = useMemo(() => cards.data?.pages.flatMap((page) => page.content) ?? [], [cards.data]);
   const closeDetail = useCallback(() => setSelectedCardId(null), []);
 
-  if (set.isLoading) {
-    return (
-      <View className="flex-1 items-center justify-center" accessibilityLabel="Loading the set">
-        <ActivityIndicator size="large" color={palette.soulfire} />
-      </View>
-    );
+  if (set.isLoading) return <SetPagePlaceholder />;
+  if (set.error instanceof ApiError && set.error.status === 404) {
+    return <Message text="No set with that code." action="Browse sets" onAction={() => router.replace("/sets")} />;
   }
   if (set.error || !set.data) {
     return (
@@ -91,11 +89,7 @@ export default function SetScreen() {
 
   let body: React.ReactElement | null = null;
   if (cards.isLoading) {
-    body = (
-      <View className="items-center py-8" accessibilityLabel="Loading cards">
-        <ActivityIndicator size="large" color={palette.soulfire} />
-      </View>
-    );
+    body = <RowPlaceholders label="Loading cards" />;
   } else if (cards.error) {
     body = (
       <Message
@@ -174,6 +168,44 @@ function Message({ text, action, onAction }: { text: string; action: string; onA
       >
         <Text className="text-sm text-soulfire">{action}</Text>
       </Pressable>
+    </View>
+  );
+}
+
+const PLACEHOLDER_ROWS = 8;
+const CARD_ROW_HEIGHT = 72;
+
+/** The page's shape while the set loads: its header, then eight rows. */
+function SetPagePlaceholder() {
+  const block = (width: number | `${number}%`, height: number) => (
+    <View style={{ width, height, borderRadius: 6, backgroundColor: palette.lair700 }} />
+  );
+  return (
+    <View className="flex-1" accessible accessibilityLabel="Loading the set">
+      <PageContent>
+        <View className="px-6 pt-6 pb-4" style={{ gap: 12 }}>
+          {block(40, 40)}
+          {block("60%", 32)}
+          {block("45%", 14)}
+        </View>
+        <RowPlaceholders />
+      </PageContent>
+    </View>
+  );
+}
+
+function RowPlaceholders({ label }: { label?: string }) {
+  return (
+    <View accessible={!!label} accessibilityLabel={label}>
+      {Array.from({ length: PLACEHOLDER_ROWS }, (_, i) => (
+        <View key={i} testID="row-placeholder" className="flex-row items-center px-6" style={{ height: CARD_ROW_HEIGHT, gap: 14 }}>
+          <View style={{ width: 40, height: 56, borderRadius: 4, backgroundColor: palette.lair700 }} />
+          <View style={{ flex: 1, gap: 8 }}>
+            <View style={{ width: "55%", height: 14, borderRadius: 4, backgroundColor: palette.lair700 }} />
+            <View style={{ width: "35%", height: 12, borderRadius: 4, backgroundColor: palette.lair700 }} />
+          </View>
+        </View>
+      ))}
     </View>
   );
 }

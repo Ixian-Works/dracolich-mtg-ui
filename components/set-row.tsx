@@ -8,7 +8,7 @@ import { setTypeLabel, type SetDto } from "@/lib/queries/sets";
 import { palette } from "@/lib/tokens";
 
 /** The height of a row, the design's strip-height. */
-export const SET_ROW_HEIGHT = 64;
+export const SET_ROW_HEIGHT = 56;
 
 /** "June 2024" from "2024-06-14". Read as a date, never shifted by the time zone. */
 export function releaseMonth(isoDate: string | undefined): string {

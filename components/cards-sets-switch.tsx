@@ -1,6 +1,7 @@
 // On a phone, Cards and Sets share one place: a switch at the top of both
 // screens, so the tab bar stays at four. On a wide screen Sets is in the top
-// bar and this draws nothing.
+// bar and this draws nothing. It takes its side margin from the screen's
+// padded block, so it lines up with the search field under it.
 
 import { router } from "expo-router";
 import { Pressable, Text, View, useWindowDimensions } from "react-native";
@@ -16,7 +17,7 @@ export function CardsSetsSwitch({ current }: { current: "cards" | "sets" }) {
   return (
     <View
       accessibilityRole="tablist"
-      className="mx-6 mb-4 flex-row rounded-full border"
+      className="mb-4 flex-row rounded-full border"
       style={{ borderColor: palette.edge, padding: 2 }}
     >
       {(["cards", "sets"] as const).map((tab) => {
