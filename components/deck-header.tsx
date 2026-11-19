@@ -6,6 +6,7 @@
 // brand serif over the gradient — feels like the cover of a book, not a
 // list-page heading.
 
+import type { ReactNode } from "react";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import { Text, View } from "react-native";
@@ -15,12 +16,14 @@ import { alpha, palette, radii } from "@/lib/tokens";
 
 interface DeckHeaderProps {
   deck: DeckDto;
+  // A line under the title, such as "Copied from" and the original's name.
+  belowTitle?: ReactNode;
 }
 
 // Hero height — wide enough to look cinematic but not eat half the page.
 const HERO_HEIGHT = 220;
 
-export function DeckHeader({ deck }: DeckHeaderProps) {
+export function DeckHeader({ deck, belowTitle }: DeckHeaderProps) {
   const bannerUri = pickBannerUri(deck);
   const accent = aggregateColorAccent(deck.colors);
 
@@ -104,6 +107,7 @@ export function DeckHeader({ deck }: DeckHeaderProps) {
         >
           {deck.name}
         </Text>
+        {belowTitle}
 
         <View
           className="mt-2 flex-row flex-wrap items-center"

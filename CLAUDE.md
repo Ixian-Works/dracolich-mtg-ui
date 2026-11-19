@@ -135,7 +135,8 @@ npx jest lib/api.test.ts # one file
   removing a card from one board (`lib/queries/decks.test.tsx`), the favorites queries
   (`lib/queries/favorites.test.tsx`), the favorite star (`components/favorite-toggle.test.tsx`), the
   deck box (`components/deck-tile.test.tsx`), `lib/copy.ts`, and Settings with the assistant
-  setting (`components/settings-screen.test.tsx`).
+  setting (`components/settings-screen.test.tsx`), and the deck page's actions with the export text
+  (`components/deck-actions.test.tsx`).
 - **Settings kept on the device live in `lib/preferences.ts`,** one TanStack Query entry each over
   `lib/storage.ts`. They outlive sign-out. The assistant switch is the first: off until the player
   turns it on, and the builder's own switch starts from it without changing it.
@@ -274,6 +275,10 @@ Key constants in the file (tunable): `SPACING_FACTOR` (slot width), `SWIPE_COMMI
   Favorites screen, from the player's own listing (`lib/queries/favorites.ts`). The listing's order
   isn't "most recently favorited", and a star can be wrong past a player's 100th favorite, until
   Ixian-Works/dracolich-mtg-deck-builder-api#32.
+- [x] Copy, Duplicate, Export and Share on the deck page (`components/deck-actions.tsx`), and a
+  copy's "Copied from" line. The export text puts the Deck section first, because the importer
+  doesn't know a `// Deck` heading until Ixian-Works/dracolich-mtg-deck-builder-api#30. Share is
+  disabled on a private deck until the Share sheet of #31.
 - [ ] Drag-and-drop adds on the build screen (click-to-add handler is what the drop target would call)
 - [ ] iOS pile-mode polish (see gotcha 14)
 
